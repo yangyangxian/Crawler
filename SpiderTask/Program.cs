@@ -34,10 +34,14 @@ namespace Crawler
                 var unitsSelector = "div.xiaoquDescribe div.xiaoquInfo div:nth-child(6) span.xiaoquInfoContent";
 
                 var unitsCell = documentChild.QuerySelectorAll(unitsSelector);
-
+                
             }
 
             //Console.WriteLine(titles);
+            //private adsa ( )
+            //{
+
+            //}
         }
     }
 }

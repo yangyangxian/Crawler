@@ -2,3 +2,5 @@
 /Crawler/obj
 /Crawler/bin
 /.vs
+**/obj
+**/bin
