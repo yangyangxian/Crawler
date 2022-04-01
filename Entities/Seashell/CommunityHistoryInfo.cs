@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yang.Entities.Seashell
+namespace Yang.Entities
 {
     public class CommunityHistoryInfo
     {

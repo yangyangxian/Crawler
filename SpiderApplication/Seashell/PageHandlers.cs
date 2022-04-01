@@ -1,5 +1,5 @@
 ﻿using AngleSharp.Dom;
-using Yang.Entities.Seashell;
+using Yang.Entities;
 using Yang.Utilities;
 
 namespace Yang.SpiderApplication.Seashell
