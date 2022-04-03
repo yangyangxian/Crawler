@@ -29,6 +29,6 @@ namespace Yang.Entities
         public string External_fb_expo_id { get; set; }
 
         [NotMapped]
-        public CommunityHistoryInfo communityHistoryInfo { get; set; }
+        public CommunityHistoryInfo CommunityHistoryInfo { get; set; }
     }
 }
