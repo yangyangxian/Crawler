@@ -13,9 +13,9 @@ namespace UnitTest
         {
             SeashellContext context = new SeashellContext();
 
-            Community community = context.Communities.FirstOrDefault();
+            AdministrativeDistrict district = context.AdministrativeDistrict.FirstOrDefault();
 
-            Assert.IsNotNull(community);
+            Assert.IsNotNull(district);
         }
     }
 }

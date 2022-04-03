@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Yang.Entities
 {
@@ -11,24 +7,22 @@ namespace Yang.Entities
     {
         public int CommunityId { get; set; }
 
+        [MaxLength(200)]
         public string CommunityName { get; set; }
 
-        [NotMapped]
-        public string AdministrativeDistrict { get; set; }
+        public int? AdministrativeDistrictId { get; set; }
 
-        [NotMapped]
+        public AdministrativeDistrict AdministrativeDistrict { get; set; }
+
+        [MaxLength(200)]
         public string Neighborhood { get; set; }
 
-        [NotMapped]
-        public string Unit { get; set; }
+        public int Unit { get; set; }
 
-        [NotMapped]
-        public string BuildingNumber { get; set; }
+        public int BuildingNumber { get; set; }
 
-        [NotMapped]
         public string External_fb_expo_id { get; set; }
 
-        [NotMapped]
-        public CommunityHistoryInfo CommunityHistoryInfo { get; set; }
+        public List<CommunityHistoryInfo> CommunityHistoryInfo { get; set; }
     }
 }
