@@ -31,7 +31,8 @@ namespace Entities.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdministrativeDistrictId"), 1L, 1);
 
                     b.Property<string>("AdministrativeDistrictName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("AdministrativeDistrictId");
 
@@ -84,19 +85,26 @@ namespace Entities.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommunityId"), 1L, 1);
 
                     b.Property<int?>("AdministrativeDistrictId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("BuildingNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("CommunityName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("External_fb_expo_id")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("External_id")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Neighborhood")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SeashellURL")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -104,6 +112,8 @@ namespace Entities.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CommunityId");
+
+                    b.HasAlternateKey("CommunityName", "AdministrativeDistrictId");
 
                     b.HasIndex("AdministrativeDistrictId");
 
@@ -141,7 +151,9 @@ namespace Entities.Migrations
                 {
                     b.HasOne("Yang.Entities.AdministrativeDistrict", "AdministrativeDistrict")
                         .WithMany("Community")
-                        .HasForeignKey("AdministrativeDistrictId");
+                        .HasForeignKey("AdministrativeDistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AdministrativeDistrict");
                 });

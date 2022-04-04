@@ -7,21 +7,25 @@ namespace Yang.Entities
     {
         public int CommunityId { get; set; }
 
-        [MaxLength(200)]
+        [MaxLength(100)]
         public string CommunityName { get; set; }
 
         public int? AdministrativeDistrictId { get; set; }
 
         public AdministrativeDistrict AdministrativeDistrict { get; set; }
 
-        [MaxLength(200)]
+        [MaxLength(100)]
         public string Neighborhood { get; set; }
 
         public int Unit { get; set; }
 
         public int BuildingNumber { get; set; }
 
-        public string External_fb_expo_id { get; set; }
+        [MaxLength(200)]
+        public string SeashellURL { get; set; }
+
+        [MaxLength(100)]
+        public string External_id { get; set; }
 
         public List<CommunityHistoryInfo> CommunityHistoryInfo { get; set; }
     }

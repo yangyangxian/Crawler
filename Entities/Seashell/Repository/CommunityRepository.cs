@@ -4,6 +4,7 @@
     {
         public static void Update(this Community community)
         {
+            
         }
     }
 }

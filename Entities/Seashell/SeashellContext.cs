@@ -13,7 +13,8 @@ namespace Yang.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Community>()
-                .ToTable("Community");
+                .ToTable("Community")
+                .HasAlternateKey(c => new { c.CommunityName, c.AdministrativeDistrictId });
 
             modelBuilder.Entity<AdministrativeDistrict>().HasData(
                 new AdministrativeDistrict() { AdministrativeDistrictId = 1, AdministrativeDistrictName = "碑林区" },
