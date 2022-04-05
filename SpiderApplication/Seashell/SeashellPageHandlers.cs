@@ -35,15 +35,15 @@ namespace Yang.SpiderApplication.Seashell
                     SeashellURL = seashellURL,
                     CommunityHistoryInfo = new List<CommunityHistoryInfo>().Append(new CommunityHistoryInfo()
                     {
-                        CommunityListingPrice = decimal.Parse(listingPrice),
-                        CommunityListingUnits = int.Parse(listingUnits),
+                        CommunityListingPrice = decimal.TryParse(listingPrice, out decimal price) ? price : 0,
+                        CommunityListingUnits = int.TryParse(listingUnits, out int units) ? units : 0,
                         DataTime = DateTime.Now
                     }).ToList()
                 };
 
                 communities.Add(communityToAdd);
             }
-
+            
             return communities;
         }
 
@@ -68,26 +68,17 @@ namespace Yang.SpiderApplication.Seashell
         {
             IDocument document = await WebPageReader.GetPageAsync(url);
 
-            var cellSelector = "div.title a.maidian-detail";
-            var cells = document.QuerySelectorAll(cellSelector);
+            string buildingText = document.QuerySelector("div.xiaoquInfo div:nth-child(5) span.xiaoquInfoContent").InnerHtml;
+            string unitsText = document.QuerySelector("div.xiaoquInfo div:nth-child(6) span.xiaoquInfoContent").InnerHtml;
 
-            List<string> priceList = new List<string>();
-            List<string> building = new List<string>();
-            List<string> unitList = new List<string>();
+            int buildingNumber = int.Parse(buildingText.Remove(buildingText.IndexOf('栋')));
+            int units = int.Parse(unitsText.Remove(unitsText.IndexOf('户')));
 
-            foreach (var cell in cells)
-            {
-                //var url = cell.GetAttribute("href");
-                //var documentChild = await BrowsingContext.New(config).OpenAsync(url);
-                var priceSelector = "div.xiaoquDescribe span.xiaoquUnitPrice";
-                var buildingNumSelector = "div.xiaoquDescribe div.xiaoquInfo div:nth-child(5) span.xiaoquInfoContent";
-                var unitsSelector = "div.xiaoquDescribe div.xiaoquInfo div:nth-child(6) span.xiaoquInfoContent";
+            Community community = new Community();
+            community.BuildingNumber = buildingNumber;
+            community.Unit = units;
 
-                //var unitsCell = documentChild.QuerySelectorAll(unitsSelector);
-
-            }
-
-            return new Community();
+            return community;
         }
     }
 }

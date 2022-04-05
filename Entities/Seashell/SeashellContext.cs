@@ -23,7 +23,13 @@ namespace Yang.Entities
                 new AdministrativeDistrict() { AdministrativeDistrictId = 4, AdministrativeDistrictName = "雁塔区" },
                 new AdministrativeDistrict() { AdministrativeDistrictId = 5, AdministrativeDistrictName = "未央区" },
                 new AdministrativeDistrict() { AdministrativeDistrictId = 6, AdministrativeDistrictName = "灞桥区" },
-                new AdministrativeDistrict() { AdministrativeDistrictId = 7, AdministrativeDistrictName = "长安区" });
+                new AdministrativeDistrict() { AdministrativeDistrictId = 7, AdministrativeDistrictName = "长安区" },
+                new AdministrativeDistrict() { AdministrativeDistrictId = 8, AdministrativeDistrictName = "高陵区" },
+                new AdministrativeDistrict() { AdministrativeDistrictId = 9, AdministrativeDistrictName = "鄠邑区" },
+                new AdministrativeDistrict() { AdministrativeDistrictId = 10, AdministrativeDistrictName = "临潼区" },
+                new AdministrativeDistrict() { AdministrativeDistrictId = 11, AdministrativeDistrictName = "蓝田县" },
+                new AdministrativeDistrict() { AdministrativeDistrictId = 12, AdministrativeDistrictName = "周至县" },
+                new AdministrativeDistrict() { AdministrativeDistrictId = 13, AdministrativeDistrictName = "西咸新区（西安）" });
         }
 
         public DbSet<Community> Communities { get; set; }

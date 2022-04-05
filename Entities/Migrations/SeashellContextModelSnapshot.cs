@@ -73,6 +73,36 @@ namespace Entities.Migrations
                         {
                             AdministrativeDistrictId = 7,
                             AdministrativeDistrictName = "长安区"
+                        },
+                        new
+                        {
+                            AdministrativeDistrictId = 8,
+                            AdministrativeDistrictName = "高陵区"
+                        },
+                        new
+                        {
+                            AdministrativeDistrictId = 9,
+                            AdministrativeDistrictName = "鄠邑区"
+                        },
+                        new
+                        {
+                            AdministrativeDistrictId = 10,
+                            AdministrativeDistrictName = "临潼区"
+                        },
+                        new
+                        {
+                            AdministrativeDistrictId = 11,
+                            AdministrativeDistrictName = "蓝田县"
+                        },
+                        new
+                        {
+                            AdministrativeDistrictId = 12,
+                            AdministrativeDistrictName = "周至县"
+                        },
+                        new
+                        {
+                            AdministrativeDistrictId = 13,
+                            AdministrativeDistrictName = "西咸新区（西安）"
                         });
                 });
 
