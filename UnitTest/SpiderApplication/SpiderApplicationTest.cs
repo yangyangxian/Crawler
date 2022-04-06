@@ -17,8 +17,17 @@ namespace UnitTest
 
             List<Community> communities = await app.ReadAllCommunities();
 
-            Assert.IsTrue(communities.Count > 0);
-         
+            Assert.IsTrue(communities.Count > 0);         
+        }
+
+        [TestMethod]
+        public async Task TestRefreshAllCommunityInfoAsync()
+        {
+            SeashellApplications app = new SeashellApplications();
+
+            int updatedRecords = await app.RefreshAllCommunityInfo();
+
+            Assert.IsTrue(updatedRecords > 0);
         }
     }
 }

@@ -27,6 +27,6 @@ namespace Yang.Entities
         [MaxLength(100)]
         public string External_id { get; set; }
 
-        public List<CommunityHistoryInfo> CommunityHistoryInfo { get; set; }
+        public List<CommunityHistoryInfo> CommunityHistoryInfo { get; set; } = new List<CommunityHistoryInfo>();
     }
 }

@@ -37,7 +37,7 @@ namespace Yang.SpiderApplication.Seashell
                     {
                         CommunityListingPrice = decimal.TryParse(listingPrice, out decimal price) ? price : 0,
                         CommunityListingUnits = int.TryParse(listingUnits, out int units) ? units : 0,
-                        DataTime = DateTime.Now
+                        DataTime = DateTime.Now.Date
                     }).ToList()
                 };
 

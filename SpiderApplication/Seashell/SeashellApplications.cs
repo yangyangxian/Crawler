@@ -14,7 +14,7 @@ namespace Yang.SpiderApplication.Seashell
 
             List<Community> communities = new List<Community>();
 
-            for (int page = 0; page < pageNum; page++)
+            for (int page = 1; page <= pageNum; page++)
             {
                 communities = communities.Concat(SeashellPageHandlers.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageXianURL, page)).Result).ToList();
             }
@@ -53,6 +53,19 @@ namespace Yang.SpiderApplication.Seashell
             }
 
             return communities;
+        }
+
+        public async Task<int> RefreshAllCommunityInfo()
+        {
+            List<Community> communities = await ReadAllCommunities();
+
+            SeashellContext context = new SeashellContext();
+            
+            CommunityRepository repo = new CommunityRepository(context);
+
+            repo.AddOrUpdate(communities);
+
+            return communities.Count();
         }
     }
 }
