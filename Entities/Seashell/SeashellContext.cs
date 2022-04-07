@@ -16,6 +16,12 @@ namespace Yang.Entities
                 .ToTable("Community")
                 .HasAlternateKey(c => new { c.CommunityName, c.AdministrativeDistrictId });
 
+            modelBuilder.Entity<CommunityHistoryInfo>()
+                .HasIndex(p => new { p.CommunityId, p.DataTime });
+
+            modelBuilder.Entity<CommunityHistoryInfo>()
+                .HasIndex(p => new { p.CommunityId });
+
             modelBuilder.Entity<AdministrativeDistrict>().HasData(
                 new AdministrativeDistrict() { AdministrativeDistrictId = 1, AdministrativeDistrictName = "碑林区" },
                 new AdministrativeDistrict() { AdministrativeDistrictId = 2, AdministrativeDistrictName = "新城区" },

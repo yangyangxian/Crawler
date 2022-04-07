@@ -174,6 +174,8 @@ namespace Entities.Migrations
 
                     b.HasIndex("CommunityId");
 
+                    b.HasIndex("CommunityId", "DataTime");
+
                     b.ToTable("CommunityHistoryInfos");
                 });
 
