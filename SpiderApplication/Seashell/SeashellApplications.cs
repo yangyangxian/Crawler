@@ -16,33 +16,8 @@ namespace Yang.SpiderApplication.Seashell
 
             for (int page = 1; page <= pageNum; page++)
             {
-                communities = communities.Concat(SeashellPageHandlers.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageXianURL, page)).Result).ToList();
+                communities = communities.Concat(SeashellPageHandlers.ReadCommunityListData(string.Format(url, page)).Result).ToList();
             }
-
-            //Task[] tasks = new Task[Convert.ToInt32(Math.Floor((decimal)communities.Count / 200)) + 1];
-            //List<Task> taskList = new List<Task>();
-
-            //for (int startIndex = 1; startIndex < communities.Count; startIndex += 200)
-            //{
-            //    int endIndex = startIndex + 199;
-            //    if (endIndex >= communities.Count)
-            //    {
-            //        endIndex = communities.Count - 1;
-            //    }
-
-            //    taskList.Add(Task.Run(() =>
-            //    {
-            //        for (int i = startIndex; i <= endIndex; i++)
-            //        {
-            //            Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(communities[i].SeashellURL).Result;
-
-            //            communities[i].BuildingNumber = communityDetail.BuildingNumber;
-            //            communities[i].Unit = communityDetail.Unit;
-            //        }
-            //    }));
-            //}
-
-            //Task.WaitAll(taskList.ToArray());
 
             foreach (Community community in communities)
             {
@@ -52,15 +27,32 @@ namespace Yang.SpiderApplication.Seashell
                 community.Unit = communityDetail.Unit;
             }
 
+            //communities.AsParallel().ForAll(community =>
+            //{
+            //    Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL).Result;
+
+            //    community.BuildingNumber = communityDetail.BuildingNumber;
+            //    community.Unit = communityDetail.Unit;
+            //});
+
             return communities;
         }
 
         public async Task<int> RefreshAllCommunityInfo()
         {
-            List<Community> communities = await ReadAllCommunities();
-
             SeashellContext context = new SeashellContext();
-            
+
+            List<AdministrativeDistrict> districts = context.AdministrativeDistrict.ToList();
+
+            List<Community> communities = new List<Community>();
+                
+            foreach (AdministrativeDistrict district in districts)
+            {               
+                List<Community> communitiesByDistrict = await ReadAllCommunities(district.CommunityMainPageURL);
+
+                communities = communities.Concat(communitiesByDistrict).ToList();
+            }
+         
             CommunityRepository repo = new CommunityRepository(context);
 
             repo.AddOrUpdate(communities);
