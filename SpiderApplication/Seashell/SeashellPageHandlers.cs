@@ -66,14 +66,27 @@ namespace Yang.SpiderApplication.Seashell
         //The url will be like 'https://xa.ke.com/xiaoqu/3820028098488153/'
         public static async Task<Community> ReadCommunityDetailData(string url) 
         {
-            IDocument document = await WebPageReader.GetPageAsync(url);
+            int buildingNumber = 0;
+            int units = 0;
+            string buildingText = String.Empty;
+            string unitsText = String.Empty;
+            IDocument document;
 
-            string buildingText = document.QuerySelector("div.xiaoquInfo div:nth-child(5) span.xiaoquInfoContent").InnerHtml;
-            string unitsText = document.QuerySelector("div.xiaoquInfo div:nth-child(6) span.xiaoquInfoContent").InnerHtml;
+            try
+            {
+                document = await WebPageReader.GetPageAsync(url);
 
-            int buildingNumber = int.Parse(buildingText.Remove(buildingText.IndexOf('栋')));
-            int units = int.Parse(unitsText.Remove(unitsText.IndexOf('户')));
+                buildingText = document.QuerySelector("div.xiaoquInfo div:nth-child(5) span.xiaoquInfoContent").InnerHtml;
+                unitsText = document.QuerySelector("div.xiaoquInfo div:nth-child(6) span.xiaoquInfoContent").InnerHtml;
 
+                buildingNumber = int.Parse(buildingText.Remove(buildingText.IndexOf('栋')));
+                units = int.Parse(unitsText.Remove(unitsText.IndexOf('户')));
+            }
+            catch (Exception e)
+            {
+                throw new Exception("buildingText:" + buildingText + "; unitsText:" + unitsText, e);
+            }
+            
             Community community = new Community();
             community.BuildingNumber = buildingNumber;
             community.Unit = units;
