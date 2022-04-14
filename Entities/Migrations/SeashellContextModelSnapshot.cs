@@ -158,8 +158,8 @@ namespace Entities.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("SeashellURL")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("Unit")
                         .HasColumnType("int");
@@ -195,11 +195,74 @@ namespace Entities.Migrations
 
                     b.HasKey("CommunityHistoryInfoId");
 
-                    b.HasIndex("CommunityId");
-
                     b.HasIndex("CommunityId", "DataTime");
 
                     b.ToTable("CommunityHistoryInfos");
+                });
+
+            modelBuilder.Entity("Yang.Entities.Home", b =>
+                {
+                    b.Property<int>("HomeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HomeId"), 1L, 1);
+
+                    b.Property<int>("Bathrooms")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Bedrooms")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BuildingTotalFloors")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommunityId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ConstructionArea")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("External_id")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("FloorArea")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SeashellURL")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("HomeId");
+
+                    b.HasIndex("CommunityId");
+
+                    b.ToTable("Home");
+                });
+
+            modelBuilder.Entity("Yang.Entities.HomeListingPrice", b =>
+                {
+                    b.Property<int>("HomeListingPriceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HomeListingPriceId"), 1L, 1);
+
+                    b.Property<int>("HomeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ListingPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ListingPriceDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("HomeListingPriceId");
+
+                    b.HasIndex("HomeId");
+
+                    b.ToTable("HomeListingPrice");
                 });
 
             modelBuilder.Entity("Yang.Entities.Community", b =>
@@ -224,6 +287,28 @@ namespace Entities.Migrations
                     b.Navigation("Community");
                 });
 
+            modelBuilder.Entity("Yang.Entities.Home", b =>
+                {
+                    b.HasOne("Yang.Entities.Community", "Community")
+                        .WithMany("Home")
+                        .HasForeignKey("CommunityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Community");
+                });
+
+            modelBuilder.Entity("Yang.Entities.HomeListingPrice", b =>
+                {
+                    b.HasOne("Yang.Entities.Home", "Community")
+                        .WithMany("HomeListingPrice")
+                        .HasForeignKey("HomeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Community");
+                });
+
             modelBuilder.Entity("Yang.Entities.AdministrativeDistrict", b =>
                 {
                     b.Navigation("Community");
@@ -232,6 +317,13 @@ namespace Entities.Migrations
             modelBuilder.Entity("Yang.Entities.Community", b =>
                 {
                     b.Navigation("CommunityHistoryInfo");
+
+                    b.Navigation("Home");
+                });
+
+            modelBuilder.Entity("Yang.Entities.Home", b =>
+                {
+                    b.Navigation("HomeListingPrice");
                 });
 #pragma warning restore 612, 618
         }

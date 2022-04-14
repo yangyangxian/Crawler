@@ -21,12 +21,14 @@ namespace Yang.Entities
 
         public int BuildingNumber { get; set; }
 
-        [MaxLength(200)]
+        [MaxLength(300)]
         public string SeashellURL { get; set; }
 
         [MaxLength(100)]
         public string External_id { get; set; }
 
         public List<CommunityHistoryInfo> CommunityHistoryInfo { get; set; } = new List<CommunityHistoryInfo>();
+
+        public List<Home> Home { get; set; } = new List<Home>();
     }
 }

@@ -30,13 +30,26 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(SeashellPageHandlers.ReadCommunityListData(string.Format(url, page)).Result).ToList();
             }
 
+            //communities.AsParallel().ForAll(community =>
+            //{
+            //    Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL).Result;
+
+            //    community.BuildingNumber = communityDetail.BuildingNumber;
+            //    community.Unit = communityDetail.Unit;
+            //});
+
+            return communities;
+        }
+
+        public async Task<List<Community>> ReadCommunityHistoryInfo(List<Community> communities)
+        {
             foreach (Community community in communities)
             {
                 Community communityDetail = new Community();
                 try
                 {
                     communityDetail = await SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL);
-                } 
+                }
                 catch (Exception e)
                 {
                     Log.Logger.Error(e, community.CommunityName + community.CommunityId);
@@ -49,14 +62,6 @@ namespace Yang.SpiderApplication.Seashell
                 community.BuildingNumber = communityDetail.BuildingNumber;
                 community.Unit = communityDetail.Unit;
             }
-
-            //communities.AsParallel().ForAll(community =>
-            //{
-            //    Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL).Result;
-
-            //    community.BuildingNumber = communityDetail.BuildingNumber;
-            //    community.Unit = communityDetail.Unit;
-            //});
 
             return communities;
         }
@@ -75,7 +80,24 @@ namespace Yang.SpiderApplication.Seashell
 
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
-         
+
+            communities = await ReadCommunityHistoryInfo(communities);
+
+            CommunityRepository repo = new CommunityRepository(context);
+
+            repo.AddOrUpdate(communities);
+
+            return communities.Count();
+        }
+
+        public async Task<int> GetHistoryInfoForAllCommunities()
+        {
+            SeashellContext context = new SeashellContext();
+
+            List<Community> communities = context.Communities.ToList();
+
+            communities = await ReadCommunityHistoryInfo(communities);
+
             CommunityRepository repo = new CommunityRepository(context);
 
             repo.AddOrUpdate(communities);

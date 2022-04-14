@@ -19,8 +19,8 @@ namespace Yang.Entities
             modelBuilder.Entity<CommunityHistoryInfo>()
                 .HasIndex(p => new { p.CommunityId, p.DataTime });
 
-            modelBuilder.Entity<CommunityHistoryInfo>()
-                .HasIndex(p => new { p.CommunityId });
+            //modelBuilder.Entity<CommunityHistoryInfo>()
+            //    .HasIndex(p => new { p.CommunityId });
 
             modelBuilder.Entity<AdministrativeDistrict>().HasData(
                 new AdministrativeDistrict() { AdministrativeDistrictId = 1, AdministrativeDistrictName = "碑林区", CommunityMainPageURL = "https://xa.ke.com/xiaoqu/beilin/pg{0}/" },
@@ -44,5 +44,9 @@ namespace Yang.Entities
         public DbSet<CommunityHistoryInfo> CommunityHistoryInfos { get; set; }
 
         public DbSet<AdministrativeDistrict> AdministrativeDistrict { get; set; }
+
+        public DbSet<Home> Home { get; set; }
+
+        public DbSet<HomeListingPrice> HomeListingPrice { get; set; }
     }
 }
