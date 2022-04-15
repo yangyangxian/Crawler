@@ -1,11 +1,14 @@
 ﻿namespace Yang.Entities
 {
-    public static class AdministrativeDistrictRepository
+    public class AdministrativeDistrictRepository : BaseRepository
     {
-        public static AdministrativeDistrict GetByName(string communityName)
+        public AdministrativeDistrictRepository(SeashellContext context) : base(context)
         {
-            SeashellContext context = new SeashellContext();
-
+            this.context = context;
+        }
+        
+        public AdministrativeDistrict GetByName(string communityName)
+        {
             return context.AdministrativeDistrict.Where(a => a.AdministrativeDistrictName.Contains(communityName)).FirstOrDefault();
         }
     }

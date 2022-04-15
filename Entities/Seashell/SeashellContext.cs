@@ -9,18 +9,22 @@ namespace Yang.Entities
         {
             optionsBuilder.UseSqlServer(@"Server=(local);Database=YangData;User Id=sa;password=sa");
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Alternate Key is the logic primary key
             modelBuilder.Entity<Community>()
                 .ToTable("Community")
                 .HasAlternateKey(c => new { c.CommunityName, c.AdministrativeDistrictId });
 
             modelBuilder.Entity<CommunityHistoryInfo>()
-                .HasIndex(p => new { p.CommunityId, p.DataTime });
+                .HasAlternateKey(p => new { p.CommunityId, p.DataTime });
 
-            //modelBuilder.Entity<CommunityHistoryInfo>()
-            //    .HasIndex(p => new { p.CommunityId });
+            modelBuilder.Entity<Home>()
+                .HasAlternateKey(h => new { h.External_id });
+
+            modelBuilder.Entity<HomeListingPrice>()
+                .HasAlternateKey(h => new { h.ListingPriceDate, h.HomeId });
 
             modelBuilder.Entity<AdministrativeDistrict>().HasData(
                 new AdministrativeDistrict() { AdministrativeDistrictId = 1, AdministrativeDistrictName = "碑林区", CommunityMainPageURL = "https://xa.ke.com/xiaoqu/beilin/pg{0}/" },

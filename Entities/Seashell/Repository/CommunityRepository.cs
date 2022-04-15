@@ -2,11 +2,9 @@
 
 namespace Yang.Entities
 {
-    public class CommunityRepository
-    {
-        private SeashellContext context = null;
-        
-        public CommunityRepository(SeashellContext context)
+    public class CommunityRepository : BaseRepository
+    {       
+        public CommunityRepository(SeashellContext context) : base(context)
         {
             this.context = context;
         }
@@ -39,8 +37,6 @@ namespace Yang.Entities
             {
                 context.Communities.Add(communityEntity);
             }
-
-            context.SaveChanges();
         }
 
         public void AddOrUpdate(List<Community> communityEntities)

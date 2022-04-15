@@ -195,7 +195,7 @@ namespace Entities.Migrations
 
                     b.HasKey("CommunityHistoryInfoId");
 
-                    b.HasIndex("CommunityId", "DataTime");
+                    b.HasAlternateKey("CommunityId", "DataTime");
 
                     b.ToTable("CommunityHistoryInfos");
                 });
@@ -224,6 +224,7 @@ namespace Entities.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("External_id")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -235,6 +236,8 @@ namespace Entities.Migrations
                         .HasColumnType("nvarchar(300)");
 
                     b.HasKey("HomeId");
+
+                    b.HasAlternateKey("External_id");
 
                     b.HasIndex("CommunityId");
 
@@ -259,6 +262,8 @@ namespace Entities.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("HomeListingPriceId");
+
+                    b.HasAlternateKey("ListingPriceDate", "HomeId");
 
                     b.HasIndex("HomeId");
 

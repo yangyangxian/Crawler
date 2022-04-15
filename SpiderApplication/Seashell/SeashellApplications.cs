@@ -87,6 +87,8 @@ namespace Yang.SpiderApplication.Seashell
 
             repo.AddOrUpdate(communities);
 
+            repo.Save();
+
             return communities.Count();
         }
 
@@ -101,6 +103,8 @@ namespace Yang.SpiderApplication.Seashell
             CommunityRepository repo = new CommunityRepository(context);
 
             repo.AddOrUpdate(communities);
+
+            repo.Save();
 
             return communities.Count();
         }

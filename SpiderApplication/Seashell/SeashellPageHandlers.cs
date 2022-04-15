@@ -25,7 +25,8 @@ namespace Yang.SpiderApplication.Seashell
                 string seashellId = communityItem.GetAttribute("data-id");
                 string seashellURL = communityItem.QuerySelector("div.info div.title a").GetAttribute("href");
 
-                AdministrativeDistrict administrativeDistrict = AdministrativeDistrictRepository.GetByName(districtName);
+                SeashellContext context = new SeashellContext();
+                AdministrativeDistrict administrativeDistrict = new AdministrativeDistrictRepository(context).GetByName(districtName);
                 Community communityToAdd = new Community()
                 {
                     CommunityName = communityName,
