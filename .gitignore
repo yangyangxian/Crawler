@@ -4,3 +4,6 @@
 /.vs
 **/obj
 **/bin
+**/*.user
+**/*pubxml
+Entities/Migrations/2022*.cs
