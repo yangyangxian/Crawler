@@ -21,6 +21,9 @@ namespace Yang.Entities
 
         public decimal FloorArea { get; set; }
 
+        [MaxLength(1000)]
+        public string FloorAreaDetail { get; set; }
+
         public int Bedrooms { get; set; }
 
         public int Bathrooms { get; set; }

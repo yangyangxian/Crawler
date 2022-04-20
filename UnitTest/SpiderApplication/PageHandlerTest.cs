@@ -25,5 +25,13 @@ namespace UnitTest
 
             Assert.IsTrue(communities.Count > 0);
         }
+
+        [TestMethod]
+        public async Task TestCommunityDetailAsync()
+        {
+            Community community = await SeashellPageHandlers.ReadCommunityDetailData("https://xa.ke.com/xiaoqu/3820028098488153/");
+
+            Assert.IsTrue(community.BuildingNumber > 0 && community.Unit > 0 && !string.IsNullOrEmpty(community.HomeListURL));
+        }
     }
 }

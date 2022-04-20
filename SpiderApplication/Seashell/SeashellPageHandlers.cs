@@ -71,6 +71,7 @@ namespace Yang.SpiderApplication.Seashell
             int units = 0;
             string buildingText = String.Empty;
             string unitsText = String.Empty;
+            string homeListURL = String.Empty;
             IDocument document;
 
             try
@@ -79,6 +80,7 @@ namespace Yang.SpiderApplication.Seashell
 
                 buildingText = document.QuerySelector("div.xiaoquInfo div:nth-child(5) span.xiaoquInfoContent").InnerHtml;
                 unitsText = document.QuerySelector("div.xiaoquInfo div:nth-child(6) span.xiaoquInfoContent").InnerHtml;
+                homeListURL = document.QuerySelector("div#goodSell a").GetAttribute("href");
 
                 buildingNumber = int.Parse(buildingText.Remove(buildingText.IndexOf('栋')));
                 units = int.Parse(unitsText.Remove(unitsText.IndexOf('户')));
@@ -91,6 +93,7 @@ namespace Yang.SpiderApplication.Seashell
             Community community = new Community();
             community.BuildingNumber = buildingNumber;
             community.Unit = units;
+            community.HomeListURL = homeListURL;
 
             return community;
         }

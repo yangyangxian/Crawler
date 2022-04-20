@@ -153,6 +153,10 @@ namespace Entities.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("HomeListURL")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<string>("Neighborhood")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -230,6 +234,10 @@ namespace Entities.Migrations
 
                     b.Property<decimal>("FloorArea")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("FloorAreaDetail")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("SeashellURL")
                         .HasMaxLength(300)
