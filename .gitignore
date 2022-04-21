@@ -1,9 +1,8 @@
-
 /Crawler/obj
 /Crawler/bin
 /.vs
 **/obj
 **/bin
 **/*.user
-**/*pubxml
-Entities/Migrations/2022*.cs
+**/*.pubxml
+Entities/Migrations
