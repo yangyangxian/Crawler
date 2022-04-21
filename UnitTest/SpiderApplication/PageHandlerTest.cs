@@ -33,5 +33,17 @@ namespace UnitTest
 
             Assert.IsTrue(community.BuildingNumber > 0 && community.Unit > 0 && !string.IsNullOrEmpty(community.HomeListURL));
         }
+
+        [TestMethod]
+        public async Task TestReadCommunityHomeListPageNumberAsync()
+        {
+            //This case is that the community has more than page of homes
+            int pageNum = await CommunityHomeListPageHandler.ReadCommunityHomeListPageNumber("https://xa.ke.com/ershoufang/c3820028098488153/");
+            Assert.IsTrue(pageNum > 0);
+
+            //This case is that the community only one page of homes
+            int pageNum1 = await CommunityHomeListPageHandler.ReadCommunityHomeListPageNumber("https://xa.ke.com/ershoufang/c3811057680286/");
+            Assert.IsTrue(pageNum1 == 1);            
+        }
     }
 }
