@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using Newtonsoft.Json.Linq;
+using Yang.Entities;
 using Yang.Utilities;
 
 namespace Yang.SpiderApplication.Seashell
@@ -31,6 +32,27 @@ namespace Yang.SpiderApplication.Seashell
             }
 
             return totalPage;
+        }
+
+        public static async Task<List<string>> ReadCommunityHomeURL(string url)
+        {
+            IDocument document = await WebPageReader.GetPageAsync(url);
+
+            List<string> homeURLs = new List<string>();
+
+            var homeItemList = document.QuerySelectorAll("ul.sellListContent li.clear");
+            if (homeItemList == null)
+                return homeURLs;
+
+            foreach (var homeItem in homeItemList)
+            {
+                IElement homeTitle = homeItem.QuerySelector("div.info div.title a");
+
+                if (homeTitle != null)
+                    homeURLs.Add(homeTitle.GetAttribute("href"));
+            }
+
+            return homeURLs;
         }
     }
 }

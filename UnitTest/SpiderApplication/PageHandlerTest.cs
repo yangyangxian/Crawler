@@ -30,8 +30,10 @@ namespace UnitTest
         public async Task TestCommunityDetailAsync()
         {
             Community community = await SeashellPageHandlers.ReadCommunityDetailData("https://xa.ke.com/xiaoqu/3820028098488153/");
-
             Assert.IsTrue(community.BuildingNumber > 0 && community.Unit > 0 && !string.IsNullOrEmpty(community.HomeListURL));
+
+            Community community2 = await SeashellPageHandlers.ReadCommunityDetailData("https://xa.ke.com/xiaoqu/3811057260042/");
+            Assert.IsTrue(community2.BuildingNumber > 0 && community2.Unit > 0 && string.IsNullOrEmpty(community2.HomeListURL));
         }
 
         [TestMethod]
@@ -44,6 +46,14 @@ namespace UnitTest
             //This case is that the community only one page of homes
             int pageNum1 = await CommunityHomeListPageHandler.ReadCommunityHomeListPageNumber("https://xa.ke.com/ershoufang/c3811057680286/");
             Assert.IsTrue(pageNum1 == 1);            
+        }
+
+        [TestMethod]
+        public async Task TestReadCommunityHomeURLAsync()
+        {
+            //This case is that the community has more than page of homes
+            List<string> URLList = await CommunityHomeListPageHandler.ReadCommunityHomeURL("https://xa.ke.com/ershoufang/c3820028098488153/");
+            Assert.IsTrue(URLList.Count > 0);
         }
     }
 }
