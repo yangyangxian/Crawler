@@ -55,5 +55,12 @@ namespace UnitTest
             List<string> URLList = await CommunityHomeListPageHandler.ReadCommunityHomeURL("https://xa.ke.com/ershoufang/c3820028098488153/");
             Assert.IsTrue(URLList.Count > 0);
         }
+
+        [TestMethod]
+        public async Task TestReadCommunityHomeDetailAsync()
+        {
+            Home home = await CommunityHomePageHandler.ReadCommunityHomeDetail("https://xa.ke.com/ershoufang/101113524576.html?fb_expo_id=570767103242608644");
+            Assert.IsTrue(home != null);
+        }
     }
 }

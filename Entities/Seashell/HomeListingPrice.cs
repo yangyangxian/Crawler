@@ -6,7 +6,7 @@
 
         public int HomeId { get; set; }
 
-        public Home Community { get; set; }
+        public Home Home { get; set; }
 
         public decimal ListingPrice { get; set; }
 
