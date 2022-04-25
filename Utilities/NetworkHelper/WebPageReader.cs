@@ -7,8 +7,7 @@ namespace Yang.Utilities
     {
         public static async Task<IDocument> GetPageAsync(string url)
         {
-            if (string.IsNullOrEmpty(url))
-                throw new ArgumentNullException("url");
+            ArgumentNullException.ThrowIfNull(url);
 
             if (!url.StartsWith("https:") && !url.StartsWith("http:"))
                 throw new ArgumentException("url must start with http or https");

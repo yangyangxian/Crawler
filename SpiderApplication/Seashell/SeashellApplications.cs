@@ -41,7 +41,7 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public async Task<List<Community>> ReadCommunityHistoryInfo(List<Community> communities)
+        public async Task<List<Community>> ReadCommunityDetailInfo(List<Community> communities)
         {
             foreach (Community community in communities)
             {
@@ -81,7 +81,7 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
 
-            communities = await ReadCommunityHistoryInfo(communities);
+            communities = await ReadCommunityDetailInfo(communities);
 
             CommunityRepository repo = new CommunityRepository(context);
 
@@ -98,7 +98,7 @@ namespace Yang.SpiderApplication.Seashell
 
             List<Community> communities = context.Communities.ToList();
 
-            communities = await ReadCommunityHistoryInfo(communities);
+            communities = await ReadCommunityDetailInfo(communities);
 
             CommunityRepository repo = new CommunityRepository(context);
 
@@ -108,5 +108,10 @@ namespace Yang.SpiderApplication.Seashell
 
             return communities.Count();
         }
+
+        //public async Task<List<Home>> ReadHomesByCommunity(Community community)
+        //{
+
+        //}
     }
 }

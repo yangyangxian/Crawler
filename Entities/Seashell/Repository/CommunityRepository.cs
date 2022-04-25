@@ -25,10 +25,13 @@ namespace Yang.Entities
 
                 foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
                 {
-                    if (context.CommunityHistoryInfos.Where(ch => ch.CommunityId == communityEntity.CommunityId && ch.DataTime == info.DataTime).FirstOrDefault() == null)
-                    {
-                        existingEntity.CommunityHistoryInfo.Add(info);
-                    }
+                    CommunityHistoryInfoRepository chiRepo = new CommunityHistoryInfoRepository(context);
+                    chiRepo.AddOrUpdate(info);
+
+                    //if (context.CommunityHistoryInfos.Where(ch => ch.CommunityId == communityEntity.CommunityId && ch.DataTime == info.DataTime).FirstOrDefault() == null)
+                    //{
+                    //    existingEntity.CommunityHistoryInfo.Add(info);
+                    //}
                 }              
 
                 context.Communities.Update(existingEntity);

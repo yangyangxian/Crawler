@@ -59,7 +59,7 @@ namespace UnitTest
         [TestMethod]
         public async Task TestReadCommunityHomeDetailAsync()
         {
-            Home home = await CommunityHomePageHandler.ReadCommunityHomeDetail("https://xa.ke.com/ershoufang/101113524576.html?fb_expo_id=570767103242608644");
+            Home home = await CommunityHomePageHandler.ReadCommunityHomeDetail("https://xa.ke.com/ershoufang/101111499576.html?fb_expo_id=570774267071905799");
             Assert.IsTrue(home != null);
         }
     }
