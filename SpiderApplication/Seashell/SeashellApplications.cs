@@ -7,6 +7,7 @@ namespace Yang.SpiderApplication.Seashell
 {
     public class SeashellApplications
     {
+        private SeashellContext context;
 
         public SeashellApplications()
         {
@@ -14,6 +15,8 @@ namespace Yang.SpiderApplication.Seashell
                 .MinimumLevel.Debug()
                 .WriteTo.File("logs/Net6Tester.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
+
+            context = new SeashellContext();
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
@@ -66,11 +69,9 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public async Task<int> RefreshAllCommunityInfo()
+        public async Task<int> GetAndRefreshAllCommunityInfo()
         {
-            SeashellContext context = new SeashellContext();
-
-            List<AdministrativeDistrict> districts = context.AdministrativeDistrict.ToList();
+            List<AdministrativeDistrict> districts = this.context.AdministrativeDistrict.ToList();
 
             List<Community> communities = new List<Community>();
                 
@@ -83,9 +84,57 @@ namespace Yang.SpiderApplication.Seashell
 
             communities = await ReadCommunityDetailInfo(communities);
 
-            CommunityRepository repo = new CommunityRepository(context);
+            CommunityRepository repo = new CommunityRepository(this.context);
 
-            repo.AddOrUpdate(communities);
+            int updatedCount = 0;
+            foreach (Community communityEntity in communities)
+            {
+                try
+                {
+                    repo.AddOrUpdate(communityEntity);
+                    updatedCount++;
+                }
+                catch (Exception e)
+                {
+                    Log.Logger.Error(e, communityEntity.CommunityName);
+
+                    continue;
+                }
+            }
+
+            repo.Save();
+
+            return updatedCount;
+        }
+
+        public async Task<int> RefreshExistingCommunityBasicInfo()
+        {
+            List<AdministrativeDistrict> districts = this.context.AdministrativeDistrict.ToList();
+
+            List<Community> communities = new List<Community>();
+
+            foreach (AdministrativeDistrict district in districts)
+            {
+                List<Community> communitiesByDistrict = await ReadAllCommunities(district.CommunityMainPageURL);
+
+                communities = communities.Concat(communitiesByDistrict).ToList();
+            }
+
+            CommunityRepository repo = new CommunityRepository(this.context);
+
+            foreach (Community communityEntity in communities)
+            {
+                try
+                {
+                    repo.Update(communityEntity);
+                }               
+                catch (Exception e)
+                {
+                    Log.Logger.Error(e, communityEntity.CommunityName);
+
+                    continue;
+                }
+            }
 
             repo.Save();
 
@@ -94,9 +143,7 @@ namespace Yang.SpiderApplication.Seashell
 
         public async Task<int> GetHistoryInfoForAllCommunities()
         {
-            SeashellContext context = new SeashellContext();
-
-            List<Community> communities = context.Communities.ToList();
+            List<Community> communities = this.context.Communities.ToList();
 
             communities = await ReadCommunityDetailInfo(communities);
 
@@ -111,7 +158,15 @@ namespace Yang.SpiderApplication.Seashell
 
         //public async Task<List<Home>> ReadHomesByCommunity(Community community)
         //{
+        //    ArgumentNullException.ThrowIfNull(community);
 
+        //    string firstPage = string.Format(url, 1);
+
+        //    int pageNum = await SeashellPageHandlers.ReadCommunityListPageNumber(firstPage);
+
+        //    Home home = await CommunityHomePageHandler.ReadCommunityHomeDetail(community.HomeListURL);
+
+            
         //}
     }
 }

@@ -21,11 +21,21 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public async Task TestRefreshAllCommunityInfoAsync()
+        public async Task TestGetAndRefreshAllCommunityInfoAsync()
         {
             SeashellApplications app = new SeashellApplications();
 
-            int updatedRecords = await app.RefreshAllCommunityInfo();
+            int updatedRecords = await app.GetAndRefreshAllCommunityInfo();
+
+            Assert.IsTrue(updatedRecords > 0);
+        }
+
+        [TestMethod]
+        public async Task TestRefreshCommunityBasicInfoAsync()
+        {
+            SeashellApplications app = new SeashellApplications();
+
+            int updatedRecords = await app.RefreshExistingCommunityBasicInfo();
 
             Assert.IsTrue(updatedRecords > 0);
         }
