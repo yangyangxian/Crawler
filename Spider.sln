@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAPI", "DataAPI\DataAPI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{7135954A-5F61-4B79-8117-99B9321058B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiderService", "SpiderService\SpiderService.csproj", "{513F96AE-4750-4DB7-A700-090E77EA0C61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiderService", "SpiderService\SpiderService.csproj", "{513F96AE-4750-4DB7-A700-090E77EA0C61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiderUI", "SpiderUI\SpiderUI.csproj", "{226AAEC2-2182-483C-8129-DDEAA6B71EBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{513F96AE-4750-4DB7-A700-090E77EA0C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{513F96AE-4750-4DB7-A700-090E77EA0C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{513F96AE-4750-4DB7-A700-090E77EA0C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226AAEC2-2182-483C-8129-DDEAA6B71EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226AAEC2-2182-483C-8129-DDEAA6B71EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226AAEC2-2182-483C-8129-DDEAA6B71EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226AAEC2-2182-483C-8129-DDEAA6B71EBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
