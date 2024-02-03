@@ -42,19 +42,20 @@ namespace Yang.Entities
             context.Communities.Update(existingEntity);
         }
         
+        //2024.2.4: Update the existing community by external id since the name of the community may change
         public void AddOrUpdate(Community communityEntity)
         {
-            Community existingEntity = context.Communities.Where(c => c.CommunityName == communityEntity.CommunityName && c.AdministrativeDistrictId == communityEntity.AdministrativeDistrictId).FirstOrDefault();
+            Community existingEntity = context.Communities.Where(c => c.External_id == communityEntity.External_id && c.AdministrativeDistrictId == communityEntity.AdministrativeDistrictId).FirstOrDefault();
             
             if (existingEntity != null)
             {
                 communityEntity.CommunityId = existingEntity.CommunityId;
 
+                existingEntity.CommunityName = communityEntity.CommunityName;
                 existingEntity.BuildingNumber = communityEntity.BuildingNumber;
                 existingEntity.Unit = communityEntity.Unit;
                 existingEntity.SeashellURL = communityEntity.SeashellURL;                
                 existingEntity.Neighborhood = communityEntity.Neighborhood;
-                existingEntity.External_id = communityEntity.External_id;
                 existingEntity.UpdateDate = DateTime.Now;
 
                 foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)

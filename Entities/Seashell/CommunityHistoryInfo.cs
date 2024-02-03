@@ -6,6 +6,8 @@
 
         public int CommunityId { get; set; }
 
+        public string CommunityName { get; set; }
+
         public Community Community { get; set; }
 
         public DateTime DataTime { get; set; }
