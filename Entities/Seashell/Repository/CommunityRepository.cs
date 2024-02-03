@@ -31,6 +31,7 @@ namespace Yang.Entities
             existingEntity.SeashellURL = communityEntity.SeashellURL;
             existingEntity.Neighborhood = communityEntity.Neighborhood;
             existingEntity.External_id = communityEntity.External_id;
+            existingEntity.UpdateDate = DateTime.Now;
 
             foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
             {
@@ -54,6 +55,7 @@ namespace Yang.Entities
                 existingEntity.SeashellURL = communityEntity.SeashellURL;                
                 existingEntity.Neighborhood = communityEntity.Neighborhood;
                 existingEntity.External_id = communityEntity.External_id;
+                existingEntity.UpdateDate = DateTime.Now;
 
                 foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
                 {
