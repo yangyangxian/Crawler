@@ -7,7 +7,7 @@ namespace Yang.Entities
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(local);Database=YangData;User Id=yy;password=yy");
+            optionsBuilder.UseSqlServer(@"Server=(local);Database=YangData;User Id=yy;password=yy;TrustServerCertificate=true");
         }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)

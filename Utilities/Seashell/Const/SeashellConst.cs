@@ -8,7 +8,7 @@ namespace Yang.Utilities
 {
     public class SeashellConst
     {
-        public const string CommunityMainPageXianURL = "https://xa.ke.com/xiaoqu/pg{0}/";
+        public const string CommunityMainPageBeilinURL = "https://xa.ke.com/xiaoqu/beilin/pg{0}/";
         public const string CommunityHomeListURL = "https://xa.ke.com/ershoufang/pg{0}c3820028098488153/";
     }
 }

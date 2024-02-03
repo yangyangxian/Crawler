@@ -15,7 +15,7 @@ namespace UnitTest
         {
             SeashellApplications app = new SeashellApplications();
 
-            List<Community> communities = await app.ReadAllCommunities();
+            List<Community> communities = await app.ReadCommunities();
 
             Assert.IsTrue(communities.Count > 0);         
         }

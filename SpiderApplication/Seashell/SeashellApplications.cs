@@ -20,7 +20,7 @@ namespace Yang.SpiderApplication.Seashell
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
-        public async Task<List<Community>> ReadAllCommunities(string url = SeashellConst.CommunityMainPageXianURL)
+        public async Task<List<Community>> ReadCommunities(string url = SeashellConst.CommunityMainPageBeilinURL)
         {
             string firstPage = string.Format(url, 1);
 
@@ -77,7 +77,7 @@ namespace Yang.SpiderApplication.Seashell
                 
             foreach (AdministrativeDistrict district in districts)
             {               
-                List<Community> communitiesByDistrict = await ReadAllCommunities(district.CommunityMainPageURL);
+                List<Community> communitiesByDistrict = await ReadCommunities(district.CommunityMainPageURL);
 
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
@@ -115,7 +115,7 @@ namespace Yang.SpiderApplication.Seashell
 
             foreach (AdministrativeDistrict district in districts)
             {
-                List<Community> communitiesByDistrict = await ReadAllCommunities(district.CommunityMainPageURL);
+                List<Community> communitiesByDistrict = await ReadCommunities(district.CommunityMainPageURL);
 
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
