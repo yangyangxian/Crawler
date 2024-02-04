@@ -9,7 +9,7 @@ using Yang.SpiderApplication.Seashell;
 namespace UnitTest
 {
     [TestClass]
-    public class RepositoryTest
+    public class RepositoryTest : TestBase
     {
         [TestMethod]
         public async Task TestAddOrUpdate()

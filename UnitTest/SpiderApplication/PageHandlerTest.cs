@@ -9,7 +9,7 @@ using Yang.Utilities;
 namespace UnitTest
 {
     [TestClass]
-    public class PageHandlerTest
+    public class PageHandlerTest : TestBase
     {
         [TestMethod]
         public async Task TestReadCommunityListPageLinksAsync()
@@ -22,7 +22,7 @@ namespace UnitTest
         [TestMethod]
         public async Task TestReadCommunityListDataAsync()
         {
-            List<Community> communities = await CommunityListPageHandler.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageBeilinURL, 1));
+            List<Community> communities = await CommunityListPageHandler.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageBeilinURL, 8));
 
             Assert.IsTrue(communities.Count > 0);
         }

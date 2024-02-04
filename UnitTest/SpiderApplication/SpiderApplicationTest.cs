@@ -1,3 +1,4 @@
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Yang.Utilities;
 namespace UnitTest
 {
     [TestClass]
-    public class SpiderApplicationTest
+    public class SpiderApplicationTest : TestBase
     {
         [TestMethod]
         public async Task TestReadAllCommunitiesAsync()
