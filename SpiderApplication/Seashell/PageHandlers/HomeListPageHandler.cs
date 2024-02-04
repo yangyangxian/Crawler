@@ -1,11 +1,12 @@
 ﻿using AngleSharp.Dom;
 using Newtonsoft.Json.Linq;
+using SpiderApplication.Seashell.PageHandlers;
 using Yang.Entities;
 using Yang.Utilities;
 
 namespace Yang.SpiderApplication.Seashell
 {
-    public class CommunityHomeListPageHandler
+    public class HomeListPageHandler : PageHandler
     {
 
         public static async Task<int> ReadCommunityHomeListPageNumber(string url)

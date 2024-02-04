@@ -1,12 +1,13 @@
 ﻿using AngleSharp.Dom;
 using Newtonsoft.Json.Linq;
+using SpiderApplication.Seashell.PageHandlers;
 using System.Text.RegularExpressions;
 using Yang.Entities;
 using Yang.Utilities;
 
 namespace Yang.SpiderApplication.Seashell
 {
-    public class CommunityHomePageHandler
+    public class HomePageHandler : PageHandler
     {
 
         public static async Task<Home> ReadCommunityHomeDetail(string url)

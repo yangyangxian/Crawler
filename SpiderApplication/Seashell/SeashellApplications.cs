@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Serilog;
+using SpiderApplication.Seashell.PageHandlers;
 using Yang.Entities;
 using Yang.Utilities;
 
@@ -24,13 +25,13 @@ namespace Yang.SpiderApplication.Seashell
         {
             string firstPage = string.Format(url, 0);
 
-            int pageNum = await SeashellPageHandlers.ReadCommunityListPageNumber(firstPage);
+            int pageNum = await CommunityListPageHandler.ReadCommunityListPageNumber(firstPage);
 
             List<Community> communities = new List<Community>();
 
             for (int page = 1; page <= pageNum; page++)
             {
-                communities = communities.Concat(SeashellPageHandlers.ReadCommunityListData(string.Format(url, page)).Result).ToList();
+                communities = communities.Concat(CommunityListPageHandler.ReadCommunityListData(string.Format(url, page)).Result).ToList();
             }
 
             //communities.AsParallel().ForAll(community =>
@@ -51,7 +52,7 @@ namespace Yang.SpiderApplication.Seashell
                 Community communityDetail = new Community();
                 try
                 {
-                    communityDetail = await SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL);
+                    communityDetail = await CommunityPageHandler.ReadCommunityDetailData(community.SeashellURL);
                 }
                 catch (Exception e)
                 {
