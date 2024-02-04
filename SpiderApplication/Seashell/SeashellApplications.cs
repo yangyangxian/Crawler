@@ -22,7 +22,7 @@ namespace Yang.SpiderApplication.Seashell
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
         public async Task<List<Community>> ReadCommunities(string url = SeashellConst.CommunityMainPageBeilinURL)
         {
-            string firstPage = string.Format(url, 1);
+            string firstPage = string.Format(url, 0);
 
             int pageNum = await SeashellPageHandlers.ReadCommunityListPageNumber(firstPage);
 

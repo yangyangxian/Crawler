@@ -14,7 +14,9 @@ namespace Yang.Utilities
 
             var config = Configuration.Default.WithDefaultLoader();
 
-            var document = await BrowsingContext.New(config).OpenAsync(url);
+            IBrowsingContext context = BrowsingContext.New(config);
+
+            var document = await context.OpenAsync(url);
 
             return document;
         }
