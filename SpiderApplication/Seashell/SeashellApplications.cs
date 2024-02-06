@@ -31,7 +31,9 @@ namespace Yang.SpiderApplication.Seashell
 
             for (int page = 1; page <= pageNum; page++)
             {
-                communities = communities.Concat(CommunityListPageHandler.ReadCommunityListData(string.Format(url, page)).Result).ToList();
+                List<Community> list = await CommunityListPageHandler.ReadCommunityListData(string.Format(url, page));
+
+                communities = communities.Concat(list).ToList();
             }
 
             //communities.AsParallel().ForAll(community =>

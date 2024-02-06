@@ -15,7 +15,7 @@ namespace SpiderApplication.Seashell.PageHandlers
             try
             {
                 IDocument document = await WebPageReader.GetPageAsync(url);
-
+                 
                 var communityItemList = document.QuerySelectorAll("ul.listContent li.xiaoquListItem");
 
                 Log.Logger.Information("The count returned from " + url + " is " + communityItemList.Count());
