@@ -4,11 +4,9 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
 Welcome to your new app.
 
-<MudText Typo="Typo.h6">MudBlazor is @Text</MudText>
+<MudText Typo="Typo.h6">Community Number: @CommunityCount</MudText>
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ButtonOnClick">@ButtonText</MudButton>
 
 @code {
@@ -16,12 +14,10 @@ Welcome to your new app.
     public string ButtonText { get; set; } = "Read Communities";
     public int CommunityCount { get; set; }
 
-    async void ButtonOnClick()
+    public async Task ButtonOnClick()
     {
         SeashellApplications seashellApp = new SeashellApplications();
         IList<Community> communities = await seashellApp.ReadCommunities();
         CommunityCount = communities.Count;
-
-        Text = $"Community Number: {CommunityCount}";
     }
 }

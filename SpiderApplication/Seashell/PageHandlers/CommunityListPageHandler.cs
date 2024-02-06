@@ -47,10 +47,10 @@ namespace SpiderApplication.Seashell.PageHandlers
                             CommunityName = communityName,
                             DataTime = DateTime.Now.Date
                         }).ToList()
-                };
+                    };
 
-                communities.Add(communityToAdd);
-            }
+                    communities.Add(communityToAdd);
+                }
             } catch (Exception ex)
             {
                 Log.Logger.Error(ex, "The url is " + url);

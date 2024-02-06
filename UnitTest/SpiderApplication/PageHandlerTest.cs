@@ -22,7 +22,7 @@ namespace UnitTest
         [TestMethod]
         public async Task TestReadCommunityListDataAsync()
         {
-            List<Community> communities = await CommunityListPageHandler.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageBeilinURL, 8));
+            List<Community> communities = await CommunityListPageHandler.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageBeilinURL, 6));
 
             Assert.IsTrue(communities.Count > 0);
         }
