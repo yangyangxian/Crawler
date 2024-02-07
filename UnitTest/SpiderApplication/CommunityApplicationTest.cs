@@ -9,12 +9,12 @@ using Yang.Utilities;
 namespace UnitTest
 {
     [TestClass]
-    public class SpiderApplicationTest : TestBase
+    public class CommunityApplicationTest : TestBase
     {
         [TestMethod]
         public async Task TestReadAllCommunitiesAsync()
         {
-            SeashellApplications app = new SeashellApplications();
+            CommunityApplications app = new CommunityApplications();
 
             List<Community> communities = await app.ReadCommunities();
 
@@ -24,7 +24,7 @@ namespace UnitTest
         [TestMethod]
         public async Task TestGetAndRefreshAllCommunityInfoAsync()
         {
-            SeashellApplications app = new SeashellApplications();
+            CommunityApplications app = new CommunityApplications();
 
             int updatedRecords = await app.GetAndRefreshAllCommunityInfo();
 
@@ -34,7 +34,7 @@ namespace UnitTest
         [TestMethod]
         public async Task TestRefreshCommunityBasicInfoAsync()
         {
-            SeashellApplications app = new SeashellApplications();
+            CommunityApplications app = new CommunityApplications();
 
             int updatedRecords = await app.RefreshExistingCommunityBasicInfo();
 

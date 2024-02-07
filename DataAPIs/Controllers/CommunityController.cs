@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Yang.Entities;
+using Yang.SpiderApplication.Seashell;
 
 namespace DataAPIs.Controllers
 {
@@ -12,10 +14,10 @@ namespace DataAPIs.Controllers
         };
 
         private readonly ILogger<CommunityController> _logger;
+        private CommunityApplications CommunityApplications { get; set; } = new CommunityApplications();
 
-        public CommunityController(ILogger<CommunityController> logger)
+        public CommunityController()
         {
-            _logger = logger;
         }
 
         [HttpGet(Name = "GetCommunity")]
@@ -28,6 +30,24 @@ namespace DataAPIs.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet(Name = "RefreshCommunityData")]
+        public async Task<int> RefreshCommunityData()
+        {
+            IList<AdministrativeDistrict> districts = CommunityApplications.GetAdministrativeDistricts();
+
+            List<Community> communities = new List<Community>();
+            foreach (AdministrativeDistrict district in districts)
+            {
+                List<Community> communitiesByDistrict = await CommunityApplications.ReadCommunities(district.CommunityMainPageURL);
+
+                communities = communities.Concat(communitiesByDistrict).ToList();
+            }
+
+            int updatedCount = CommunityApplications.AddOrUpdateCommunities(communities);
+
+            return updatedCount;
         }
     }
 }

@@ -1,16 +1,20 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using SpiderApplication.Seashell.PageHandlers;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Yang.Entities;
 using Yang.Utilities;
 
 namespace Yang.SpiderApplication.Seashell
 {
-    public class SeashellApplications
+    public class CommunityApplications
     {
         private SeashellContext context;
+        private AdministrativeDistrictRepository administrativeDistrictRepository;
 
-        public SeashellApplications()
+        public CommunityApplications()
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -18,10 +22,11 @@ namespace Yang.SpiderApplication.Seashell
                 .CreateLogger();
 
             context = new SeashellContext();
+            administrativeDistrictRepository = new AdministrativeDistrictRepository(context);
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
-        public async Task<List<Community>> ReadCommunities(string url = SeashellConst.CommunityMainPageBeilinURL)
+        public async Task<List<Community>> ReadCommunities(string url = SeashellConst.CommunityMainPageGaolingURL)
         {
             string firstPage = string.Format(url, 0);
 
@@ -36,6 +41,7 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(list).ToList();
             }
 
+            communities = await ReadCommunityDetailInfo(communities);
             //communities.AsParallel().ForAll(community =>
             //{
             //    Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL).Result;
@@ -72,21 +78,8 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public async Task<int> GetAndRefreshAllCommunityInfo()
+        public int AddOrUpdateCommunities(IList<Community> communities)
         {
-            List<AdministrativeDistrict> districts = this.context.AdministrativeDistrict.ToList();
-
-            List<Community> communities = new List<Community>();
-                
-            foreach (AdministrativeDistrict district in districts)
-            {               
-                List<Community> communitiesByDistrict = await ReadCommunities(district.CommunityMainPageURL);
-
-                communities = communities.Concat(communitiesByDistrict).ToList();
-            }
-
-            communities = await ReadCommunityDetailInfo(communities);
-
             CommunityRepository repo = new CommunityRepository(this.context);
 
             int updatedCount = 0;
@@ -106,6 +99,34 @@ namespace Yang.SpiderApplication.Seashell
             }
 
             repo.Save();
+
+            return updatedCount;
+        } 
+
+        public IList<AdministrativeDistrict> GetAdministrativeDistricts(Expression<Func<AdministrativeDistrict, bool>>? predicate = null)
+        {
+            if (predicate == null)
+                return this.context.AdministrativeDistrict.ToList();
+            else
+                return this.context.AdministrativeDistrict.Where(predicate).ToList();           
+        }
+
+        public async Task<int> GetAndRefreshAllCommunityInfo()
+        {
+            List<AdministrativeDistrict> districts = this.context.AdministrativeDistrict.ToList();
+
+            List<Community> communities = new List<Community>();
+                
+            foreach (AdministrativeDistrict district in districts)
+            {               
+                List<Community> communitiesByDistrict = await ReadCommunities(district.CommunityMainPageURL);
+
+                communities = communities.Concat(communitiesByDistrict).ToList();
+            }
+
+            communities = await ReadCommunityDetailInfo(communities);
+
+            int updatedCount = AddOrUpdateCommunities(communities);
 
             return updatedCount;
         }

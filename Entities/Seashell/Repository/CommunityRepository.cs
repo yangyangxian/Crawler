@@ -51,11 +51,11 @@ namespace Yang.Entities
             {
                 communityEntity.CommunityId = existingEntity.CommunityId;
 
-                existingEntity.CommunityName = communityEntity.CommunityName;
-                existingEntity.BuildingNumber = communityEntity.BuildingNumber;
-                existingEntity.Unit = communityEntity.Unit;
-                existingEntity.SeashellURL = communityEntity.SeashellURL;                
-                existingEntity.Neighborhood = communityEntity.Neighborhood;
+                existingEntity.CommunityName = !string.IsNullOrEmpty(communityEntity.CommunityName) ? communityEntity.CommunityName : existingEntity.CommunityName;
+                existingEntity.BuildingNumber = communityEntity.BuildingNumber != 0 ? communityEntity.BuildingNumber : existingEntity.BuildingNumber;
+                existingEntity.Unit = communityEntity.Unit != 0 ? communityEntity.Unit : existingEntity.Unit;
+                existingEntity.SeashellURL = !string.IsNullOrEmpty(communityEntity.SeashellURL) ? communityEntity.SeashellURL : existingEntity.SeashellURL;                
+                existingEntity.Neighborhood = !string.IsNullOrEmpty(communityEntity.Neighborhood) ? communityEntity.Neighborhood : existingEntity.Neighborhood;
                 existingEntity.UpdateDate = DateTime.Now;
 
                 foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
