@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using SpiderApplication.Seashell.PageHandlers;
 using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Yang.Entities;
 using Yang.Utilities;
@@ -26,7 +27,7 @@ namespace Yang.SpiderApplication.Seashell
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
-        public async Task<List<Community>> ReadCommunities(string url = SeashellConst.CommunityMainPageGaolingURL)
+        public async Task<List<Community>> ReadCommunities(string url = SeashellConst.CommunityMainPageChanganURL)
         {
             string firstPage = string.Format(url, 0);
 
@@ -41,7 +42,7 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(list).ToList();
             }
 
-            communities = await ReadCommunityDetailInfo(communities);
+            communities = ReadCommunityDetailInfo(communities);
             //communities.AsParallel().ForAll(community =>
             //{
             //    Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL).Result;
@@ -53,9 +54,9 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public async Task<List<Community>> ReadCommunityDetailInfo(List<Community> communities)
+        public List<Community> ReadCommunityDetailInfo(List<Community> communities)
         {
-            foreach (Community community in communities)
+            Parallel.ForEach(communities, async community =>
             {
                 Community communityDetail = new Community();
                 try
@@ -68,12 +69,12 @@ namespace Yang.SpiderApplication.Seashell
 
                     community.BuildingNumber = 0;
                     community.Unit = 0;
-                    continue;
+                    return;
                 }
 
                 community.BuildingNumber = communityDetail.BuildingNumber;
                 community.Unit = communityDetail.Unit;
-            }
+            });
 
             return communities;
         }
@@ -124,7 +125,7 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
 
-            communities = await ReadCommunityDetailInfo(communities);
+            communities = ReadCommunityDetailInfo(communities);
 
             int updatedCount = AddOrUpdateCommunities(communities);
 
@@ -169,7 +170,7 @@ namespace Yang.SpiderApplication.Seashell
         {
             List<Community> communities = this.context.Communities.ToList();
 
-            communities = await ReadCommunityDetailInfo(communities);
+            communities = ReadCommunityDetailInfo(communities);
 
             CommunityRepository repo = new CommunityRepository(context);
 
