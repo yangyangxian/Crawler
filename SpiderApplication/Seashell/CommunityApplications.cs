@@ -42,7 +42,7 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(list).ToList();
             }
 
-            communities = ReadCommunityDetailInfo(communities);
+            communities = await ReadCommunityDetailInfo(communities);
             //communities.AsParallel().ForAll(community =>
             //{
             //    Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL).Result;
@@ -54,9 +54,14 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public List<Community> ReadCommunityDetailInfo(List<Community> communities)
+        public async Task<List<Community>> ReadCommunityDetailInfo(List<Community> communities)
         {
-            Parallel.ForEach(communities, async community =>
+            var options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = 50
+            };
+
+            await Parallel.ForEachAsync(communities, options, async (community, ct) =>
             {
                 Community communityDetail = new Community();
                 try
@@ -125,7 +130,7 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
 
-            communities = ReadCommunityDetailInfo(communities);
+            communities = await ReadCommunityDetailInfo(communities);
 
             int updatedCount = AddOrUpdateCommunities(communities);
 
@@ -170,7 +175,7 @@ namespace Yang.SpiderApplication.Seashell
         {
             List<Community> communities = this.context.Communities.ToList();
 
-            communities = ReadCommunityDetailInfo(communities);
+            communities = await ReadCommunityDetailInfo(communities);
 
             CommunityRepository repo = new CommunityRepository(context);
 
