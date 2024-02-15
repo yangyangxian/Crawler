@@ -22,5 +22,18 @@
             else
                 throw new Exception("Please check the input parameter communityInfo. It causes the unexpected situation: communityInfo.CommunityHistoryInfoId is 0 but existingEntity is not null;communityInfo.CommunityHistoryInfoId is not 0 but existingEntity is null ");
         }
+
+        public void Add(CommunityHistoryInfo communityHistoryInfo)
+        {
+            if (communityHistoryInfo.CommunityId == 0)
+                return;
+
+            CommunityHistoryInfo existingEntity = this.context.CommunityHistoryInfos.Where(x => x.CommunityId == communityHistoryInfo.CommunityId && x.DataTime == communityHistoryInfo.DataTime).FirstOrDefault();
+
+            if (existingEntity != null)
+                return;
+
+            this.context.CommunityHistoryInfos.Add(communityHistoryInfo);
+        }
     }
 }

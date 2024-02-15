@@ -8,14 +8,15 @@ namespace Yang.Entities
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=(local);Database=YangData;User Id=yy;password=yy;TrustServerCertificate=true");
+            optionsBuilder.EnableSensitiveDataLogging();
         }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Alternate Key is the logic primary key
             modelBuilder.Entity<Community>()
                 .ToTable("Community")
-                .HasAlternateKey(c => new { c.CommunityName, c.AdministrativeDistrictId });
+                .HasAlternateKey(c => new { c.External_id });
 
             modelBuilder.Entity<CommunityHistoryInfo>()
                 .HasAlternateKey(p => new { p.CommunityId, p.DataTime });

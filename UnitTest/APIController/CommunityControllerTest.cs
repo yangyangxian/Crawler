@@ -1,6 +1,7 @@
 using DataAPIs.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog;
+using Serilog.Core;
 using System.Threading.Tasks;
 
 namespace UnitTest
@@ -14,6 +15,8 @@ namespace UnitTest
             CommunityController controller = new CommunityController();
             
             int count = await controller.RefreshCommunityData();
+
+            Log.Logger.Information("Refresh compeleted: " + count + " records have been refreshed.");
         }
     }
 }

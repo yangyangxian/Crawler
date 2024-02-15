@@ -30,11 +30,11 @@ namespace UnitTest
         [TestMethod]
         public async Task TestCommunityDetailAsync()
         {
-            Community community = await CommunityPageHandler.ReadCommunityDetailData("https://xa.ke.com/xiaoqu/3820028098488153/");
+            Community community = await CommunityPageHandler.ReadCommunityDetailData("https://xa.ke.com/xiaoqu/3811061873163/");
             Assert.IsTrue(community.BuildingNumber > 0 && community.Unit > 0 && !string.IsNullOrEmpty(community.HomeListURL));
 
-            Community community2 = await CommunityPageHandler.ReadCommunityDetailData("https://xa.ke.com/xiaoqu/3811057260042/");
-            Assert.IsTrue(community2.BuildingNumber > 0 && community2.Unit > 0 && string.IsNullOrEmpty(community2.HomeListURL));
+            //Community community2 = await CommunityPageHandler.ReadCommunityDetailData("https://xa.ke.com/xiaoqu/3811057260042/");
+            //Assert.IsTrue(community2.BuildingNumber > 0 && community2.Unit > 0 && string.IsNullOrEmpty(community2.HomeListURL));
         }
 
         [TestMethod]

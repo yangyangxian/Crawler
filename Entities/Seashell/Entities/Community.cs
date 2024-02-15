@@ -35,5 +35,11 @@ namespace Yang.Entities
         public List<CommunityHistoryInfo> CommunityHistoryInfo { get; set; } = new List<CommunityHistoryInfo>();
 
         public List<Home> Home { get; set; } = new List<Home>();
+
+        public void AddCommunityHistoryInfo(CommunityHistoryInfo entityToAdd)
+        {
+            if (CommunityHistoryInfo.Where(c => c.CommunityId == entityToAdd.CommunityId && c.DataTime.Date == entityToAdd.DataTime.Date).FirstOrDefault() == null)
+                CommunityHistoryInfo.Add(entityToAdd);
+        }
     }
 }

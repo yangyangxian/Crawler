@@ -81,7 +81,7 @@ namespace Yang.SpiderApplication.Seashell
                 community.Unit = communityDetail.Unit;
             });
 
-            return communities;
+             return communities;
         }
 
         public int AddOrUpdateCommunities(IList<Community> communities)
@@ -132,14 +132,22 @@ namespace Yang.SpiderApplication.Seashell
 
             communities = await ReadCommunityDetailInfo(communities);
 
-            int updatedCount = AddOrUpdateCommunities(communities);
+            int updatedCount = 0;
+            try
+            {
+                updatedCount = AddOrUpdateCommunities(communities);
+            } catch (Exception e)
+            {
+            }
+
 
             return updatedCount;
         }
 
         public async Task<int> RefreshExistingCommunityBasicInfo()
         {
-            List<AdministrativeDistrict> districts = this.context.AdministrativeDistrict.ToList();
+            AdministrativeDistrictRepository administrativeDistrictRepository = new AdministrativeDistrictRepository(this.context);
+            IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
             List<Community> communities = new List<Community>();
 

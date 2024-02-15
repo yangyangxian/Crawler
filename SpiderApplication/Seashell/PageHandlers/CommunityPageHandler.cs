@@ -21,10 +21,10 @@ namespace SpiderApplication.Seashell.PageHandlers
             string homeListURL = string.Empty;
             IDocument document;
 
+            document = await WebPageReader.GetPageAsync(url);
+
             try
             {
-                document = await WebPageReader.GetPageAsync(url);
-
                 buildingText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(3) span.xiaoquInfoContent").InnerHtml;
                 unitsText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(2) span.xiaoquInfoContent").InnerHtml;
                 homeListURL = document.QuerySelector("div#goodSell a") != null ? document.QuerySelector("div#goodSell a").GetAttribute("href") : string.Empty;
@@ -34,7 +34,7 @@ namespace SpiderApplication.Seashell.PageHandlers
             }
             catch (Exception e)
             {
-                throw new Exception("buildingText:" + buildingText + "; unitsText:" + unitsText, e);
+                throw new Exception(document.ToString() + "buildingText:" + buildingText + "; unitsText:" + unitsText, e);
             }
 
             Community community = new Community();

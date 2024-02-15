@@ -19,7 +19,7 @@ namespace Yang.Entities
         {
             ArgumentNullException.ThrowIfNull(communityEntity);
 
-            Community existingEntity = context.Communities.Where(c => c.CommunityName == communityEntity.CommunityName && c.AdministrativeDistrictId == communityEntity.AdministrativeDistrictId).FirstOrDefault();
+            Community existingEntity = context.Communities.Where(c => c.External_id == communityEntity.External_id).Include(c => c.CommunityHistoryInfo).FirstOrDefault();
 
             if (existingEntity == null)
                 throw new Exception("Can not update. Not found an existing community in the database.");
@@ -30,13 +30,15 @@ namespace Yang.Entities
             existingEntity.Unit = communityEntity.Unit;
             existingEntity.SeashellURL = communityEntity.SeashellURL;
             existingEntity.Neighborhood = communityEntity.Neighborhood;
-            existingEntity.External_id = communityEntity.External_id;
-            existingEntity.UpdateDate = DateTime.Now;
+            //existingEntity.External_id = communityEntity.External_id;
+            existingEntity.UpdateDate = DateTime.Now.Date;
 
             foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
             {
-                CommunityHistoryInfoRepository chiRepo = new CommunityHistoryInfoRepository(context);
-                chiRepo.AddOrUpdate(info);
+                info.CommunityId = existingEntity.CommunityId;
+                existingEntity.AddCommunityHistoryInfo(info);
+                //CommunityHistoryInfoRepository chiRepo = new CommunityHistoryInfoRepository(context);
+                //chiRepo.Add(info);
             }
 
             context.Communities.Update(existingEntity);
@@ -45,7 +47,7 @@ namespace Yang.Entities
         //2024.2.4: Update the existing community by external id since the name of the community may change
         public void AddOrUpdate(Community communityEntity)
         {
-            Community existingEntity = context.Communities.Where(c => c.External_id == communityEntity.External_id && c.AdministrativeDistrictId == communityEntity.AdministrativeDistrictId).FirstOrDefault();
+            Community existingEntity = context.Communities.Where(c => c.External_id == communityEntity.External_id).FirstOrDefault();
             
             if (existingEntity != null)
             {
@@ -60,13 +62,13 @@ namespace Yang.Entities
 
                 foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
                 {
-                    CommunityHistoryInfoRepository chiRepo = new CommunityHistoryInfoRepository(context);
-                    chiRepo.AddOrUpdate(info);
-
-                    //if (context.CommunityHistoryInfos.Where(ch => ch.CommunityId == communityEntity.CommunityId && ch.DataTime == info.DataTime).FirstOrDefault() == null)
-                    //{
-                    //    existingEntity.CommunityHistoryInfo.Add(info);
-                    //}
+                    info.CommunityId = existingEntity.CommunityId;
+                    //CommunityHistoryInfoRepository chiRepo = new CommunityHistoryInfoRepository(context);
+                    //chiRepo.AddOrUpdate(info);
+                    if (context.CommunityHistoryInfos.Where(ch => ch.CommunityId == existingEntity.CommunityId && ch.DataTime == info.DataTime).FirstOrDefault() == null)
+                    {
+                        existingEntity.CommunityHistoryInfo.Add(info);
+                    }
                 }              
 
                 context.Communities.Update(existingEntity);
