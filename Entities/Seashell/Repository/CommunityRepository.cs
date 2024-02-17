@@ -30,8 +30,7 @@ namespace Yang.Entities
             existingEntity.Unit = communityEntity.Unit;
             existingEntity.SeashellURL = communityEntity.SeashellURL;
             existingEntity.Neighborhood = communityEntity.Neighborhood;
-            //existingEntity.External_id = communityEntity.External_id;
-            existingEntity.UpdateDate = DateTime.Now.Date;
+            existingEntity.UpdateDate = DateTime.Now;
 
             foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
             {
@@ -47,7 +46,7 @@ namespace Yang.Entities
         //2024.2.4: Update the existing community by external id since the name of the community may change
         public void AddOrUpdate(Community communityEntity)
         {
-            Community existingEntity = context.Communities.Where(c => c.External_id == communityEntity.External_id).FirstOrDefault();
+            Community existingEntity = context.Communities.Where(c => c.External_id == communityEntity.External_id).Include(c => c.CommunityHistoryInfo).FirstOrDefault();
             
             if (existingEntity != null)
             {
@@ -63,12 +62,7 @@ namespace Yang.Entities
                 foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)
                 {
                     info.CommunityId = existingEntity.CommunityId;
-                    //CommunityHistoryInfoRepository chiRepo = new CommunityHistoryInfoRepository(context);
-                    //chiRepo.AddOrUpdate(info);
-                    if (context.CommunityHistoryInfos.Where(ch => ch.CommunityId == existingEntity.CommunityId && ch.DataTime == info.DataTime).FirstOrDefault() == null)
-                    {
-                        existingEntity.CommunityHistoryInfo.Add(info);
-                    }
+                    existingEntity.AddCommunityHistoryInfo(info);
                 }              
 
                 context.Communities.Update(existingEntity);

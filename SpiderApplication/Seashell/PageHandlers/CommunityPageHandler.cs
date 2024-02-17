@@ -16,9 +16,11 @@ namespace SpiderApplication.Seashell.PageHandlers
         {
             int buildingNumber = 0;
             int units = 0;
+            decimal plotRatio = 0;
             string buildingText = string.Empty;
             string unitsText = string.Empty;
             string homeListURL = string.Empty;
+            string plotRatioText = string.Empty;
             IDocument document;
 
             document = await WebPageReader.GetPageAsync(url);
@@ -28,9 +30,11 @@ namespace SpiderApplication.Seashell.PageHandlers
                 buildingText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(3) span.xiaoquInfoContent").InnerHtml;
                 unitsText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(2) span.xiaoquInfoContent").InnerHtml;
                 homeListURL = document.QuerySelector("div#goodSell a") != null ? document.QuerySelector("div#goodSell a").GetAttribute("href") : string.Empty;
+                plotRatioText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(5) span.xiaoquInfoContent").InnerHtml;
 
                 buildingNumber = int.Parse(buildingText.Remove(buildingText.IndexOf('栋')));
                 units = int.Parse(unitsText.Remove(unitsText.IndexOf('户')));
+                plotRatio = decimal.Parse(plotRatioText);
             }
             catch (Exception e)
             {
@@ -41,6 +45,7 @@ namespace SpiderApplication.Seashell.PageHandlers
             community.BuildingNumber = buildingNumber;
             community.Unit = units;
             community.HomeListURL = homeListURL;
+            community.PlotRatio = plotRatio;
 
             return community;
         }

@@ -14,6 +14,7 @@ namespace Yang.SpiderApplication.Seashell
     {
         private SeashellContext context;
         private AdministrativeDistrictRepository administrativeDistrictRepository;
+        private CommunityRepository communityRepo;
 
         public CommunityApplications()
         {
@@ -24,6 +25,7 @@ namespace Yang.SpiderApplication.Seashell
 
             context = new SeashellContext();
             administrativeDistrictRepository = new AdministrativeDistrictRepository(context);
+            communityRepo = new CommunityRepository(this.context);
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
@@ -86,25 +88,27 @@ namespace Yang.SpiderApplication.Seashell
 
         public int AddOrUpdateCommunities(IList<Community> communities)
         {
-            CommunityRepository repo = new CommunityRepository(this.context);
+            var groupByExternal =
+                from community in communities
+                group community by community.External_id;
 
             int updatedCount = 0;
-            foreach (Community communityEntity in communities)
+            foreach (var communityGroup in groupByExternal)
             {
                 try
                 {
-                    repo.AddOrUpdate(communityEntity);
+                    communityRepo.AddOrUpdate(communityGroup.First());
                     updatedCount++;
                 }
                 catch (Exception e)
                 {
-                    Log.Logger.Error(e, communityEntity.CommunityName);
+                    Log.Logger.Error(e, communityGroup.First().CommunityName);
 
                     continue;
                 }
             }
 
-            repo.Save();
+            communityRepo.Save();
 
             return updatedCount;
         } 
@@ -119,7 +123,7 @@ namespace Yang.SpiderApplication.Seashell
 
         public async Task<int> GetAndRefreshAllCommunityInfo()
         {
-            List<AdministrativeDistrict> districts = this.context.AdministrativeDistrict.ToList();
+            IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
             List<Community> communities = new List<Community>();
                 
@@ -130,23 +134,17 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
 
-            communities = await ReadCommunityDetailInfo(communities);
-
             int updatedCount = 0;
-            try
-            {
-                updatedCount = AddOrUpdateCommunities(communities);
-            } catch (Exception e)
-            {
-            }
 
+            updatedCount = AddOrUpdateCommunities(communities);
+
+            Log.Logger.Information("Updated count:" + updatedCount);
 
             return updatedCount;
         }
 
         public async Task<int> RefreshExistingCommunityBasicInfo()
         {
-            AdministrativeDistrictRepository administrativeDistrictRepository = new AdministrativeDistrictRepository(this.context);
             IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
             List<Community> communities = new List<Community>();
