@@ -40,6 +40,7 @@ namespace SpiderApplication.Seashell.PageHandlers
                         Neighborhood = neighborhood,
                         External_id = seashellId,
                         SeashellURL = seashellURL,
+                        UpdateDate = DateTime.Now,
                         CommunityHistoryInfo = new List<CommunityHistoryInfo>().Append(new CommunityHistoryInfo()
                         {
                             CommunityListingPrice = decimal.TryParse(listingPrice, out decimal price) ? price : 0,

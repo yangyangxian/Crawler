@@ -16,17 +16,17 @@ namespace UnitTest
         {
             CommunityApplications app = new CommunityApplications();
 
-            List<Community> communities = await app.ReadCommunities();
+            List<Community> communities = await app.ReadCommunitiesByDistrict();
 
             Assert.IsTrue(communities.Count > 0);         
         }
 
         [TestMethod]
-        public async Task TestGetAndRefreshAllCommunityInfoAsync()
+        public async Task TestRefreshAllCommunityInfoAsync()
         {
             CommunityApplications app = new CommunityApplications();
 
-            int updatedRecords = await app.GetAndRefreshAllCommunityInfo();
+            int updatedRecords = await app.RefreshAllCommunityInfo();
 
             Assert.IsTrue(updatedRecords > 0);
         }
@@ -36,7 +36,7 @@ namespace UnitTest
         {
             CommunityApplications app = new CommunityApplications();
 
-            int updatedRecords = await app.RefreshExistingCommunityBasicInfo();
+            int updatedRecords = await app.RefreshCommunityBasicInfo();
 
             Assert.IsTrue(updatedRecords > 0);
         }

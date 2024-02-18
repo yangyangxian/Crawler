@@ -51,12 +51,19 @@ namespace Yang.Entities
             if (existingEntity != null)
             {
                 communityEntity.CommunityId = existingEntity.CommunityId;
+                if (!string.IsNullOrEmpty(communityEntity.CommunityName))
+                    existingEntity.CommunityName = communityEntity.CommunityName;
+                if (communityEntity.BuildingNumber != 0)
+                    existingEntity.BuildingNumber = communityEntity.BuildingNumber;
+                if (communityEntity.Unit != 0)
+                    existingEntity.Unit = communityEntity.Unit;
+                if (communityEntity.PlotRatio > 0)
+                    existingEntity.PlotRatio = communityEntity.PlotRatio;
+                if (!string.IsNullOrEmpty(communityEntity.SeashellURL))
+                    existingEntity.SeashellURL = communityEntity.SeashellURL;
+                if (!string.IsNullOrEmpty(communityEntity.Neighborhood))
+                    existingEntity.Neighborhood = communityEntity.Neighborhood;
 
-                existingEntity.CommunityName = !string.IsNullOrEmpty(communityEntity.CommunityName) ? communityEntity.CommunityName : existingEntity.CommunityName;
-                existingEntity.BuildingNumber = communityEntity.BuildingNumber != 0 ? communityEntity.BuildingNumber : existingEntity.BuildingNumber;
-                existingEntity.Unit = communityEntity.Unit != 0 ? communityEntity.Unit : existingEntity.Unit;
-                existingEntity.SeashellURL = !string.IsNullOrEmpty(communityEntity.SeashellURL) ? communityEntity.SeashellURL : existingEntity.SeashellURL;                
-                existingEntity.Neighborhood = !string.IsNullOrEmpty(communityEntity.Neighborhood) ? communityEntity.Neighborhood : existingEntity.Neighborhood;
                 existingEntity.UpdateDate = DateTime.Now;
 
                 foreach (CommunityHistoryInfo info in communityEntity.CommunityHistoryInfo)

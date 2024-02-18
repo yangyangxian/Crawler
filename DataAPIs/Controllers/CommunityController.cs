@@ -40,7 +40,7 @@ namespace DataAPIs.Controllers
             List<Community> communities = new List<Community>();
             foreach (AdministrativeDistrict district in districts)
             {
-                List<Community> communitiesByDistrict = await CommunityApplications.ReadCommunities(district.CommunityMainPageURL);
+                List<Community> communitiesByDistrict = await CommunityApplications.ReadCommunitiesByDistrict(district.CommunityMainPageURL);
 
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }

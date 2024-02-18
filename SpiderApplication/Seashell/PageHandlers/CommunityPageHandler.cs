@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Yang.Entities;
 using Yang.Utilities;
 
@@ -29,16 +30,16 @@ namespace SpiderApplication.Seashell.PageHandlers
             {
                 buildingText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(3) span.xiaoquInfoContent").InnerHtml;
                 unitsText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(2) span.xiaoquInfoContent").InnerHtml;
-                homeListURL = document.QuerySelector("div#goodSell a") != null ? document.QuerySelector("div#goodSell a").GetAttribute("href") : string.Empty;
+                homeListURL = document.QuerySelector("div#goodSellHeader a") != null ? document.QuerySelector("div#goodSellHeader a").GetAttribute("href") : string.Empty;
                 plotRatioText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(5) span.xiaoquInfoContent").InnerHtml;
 
-                buildingNumber = int.Parse(buildingText.Remove(buildingText.IndexOf('栋')));
-                units = int.Parse(unitsText.Remove(unitsText.IndexOf('户')));
-                plotRatio = decimal.Parse(plotRatioText);
+                int.TryParse(buildingText.Remove(buildingText.IndexOf('栋')), out buildingNumber);
+                int.TryParse(unitsText.Remove(unitsText.IndexOf('户')), out units);
+                decimal.TryParse(plotRatioText, out plotRatio);
             }
             catch (Exception e)
             {
-                throw new Exception(document.ToString() + "buildingText:" + buildingText + "; unitsText:" + unitsText, e);
+                throw new Exception("Unexpected error occurred when parsing data from the community page(" + url + "). The document body is: " + document.Body.InnerHtml, e);
             }
 
             Community community = new Community();

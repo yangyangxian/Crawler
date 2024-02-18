@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Serilog;
 using SpiderApplication.Seashell.PageHandlers;
+using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Yang.SpiderApplication.Seashell
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
-        public async Task<List<Community>> ReadCommunities(string url = SeashellConst.CommunityMainPageChanganURL)
+        public async Task<List<Community>> ReadCommunitiesByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
         {
             string firstPage = string.Format(url, 0);
 
@@ -45,13 +46,26 @@ namespace Yang.SpiderApplication.Seashell
             }
 
             communities = await ReadCommunityDetailInfo(communities);
-            //communities.AsParallel().ForAll(community =>
-            //{
-            //    Community communityDetail = SeashellPageHandlers.ReadCommunityDetailData(community.SeashellURL).Result;
 
-            //    community.BuildingNumber = communityDetail.BuildingNumber;
-            //    community.Unit = communityDetail.Unit;
-            //});
+            return communities;
+        }
+
+        //Only including data on the community list page. This will significantly reduce the time to retreive community data.
+        //The info on the community page(unit, building number, plot ratio will not change normally)
+        public async Task<List<Community>> ReadCommunitiesBasicInfoByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
+        {
+            string firstPage = string.Format(url, 0);
+
+            int pageNum = await CommunityListPageHandler.ReadCommunityListPageNumber(firstPage);
+
+            List<Community> communities = new List<Community>();
+
+            for (int page = 1; page <= pageNum; page++)
+            {
+                List<Community> list = await CommunityListPageHandler.ReadCommunityListData(string.Format(url, page));
+
+                communities = communities.Concat(list).ToList();
+            }
 
             return communities;
         }
@@ -69,24 +83,23 @@ namespace Yang.SpiderApplication.Seashell
                 try
                 {
                     communityDetail = await CommunityPageHandler.ReadCommunityDetailData(community.SeashellURL);
+                    community.BuildingNumber = communityDetail.BuildingNumber;
+                    community.Unit = communityDetail.Unit;
+                    community.PlotRatio = communityDetail.PlotRatio;
                 }
                 catch (Exception e)
                 {
-                    Log.Logger.Error(e, community.CommunityName + community.CommunityId);
+                    Log.Logger.Error(e, community.CommunityName + community.SeashellURL);
 
                     community.BuildingNumber = 0;
                     community.Unit = 0;
-                    return;
                 }
-
-                community.BuildingNumber = communityDetail.BuildingNumber;
-                community.Unit = communityDetail.Unit;
             });
 
              return communities;
         }
 
-        public int AddOrUpdateCommunities(IList<Community> communities)
+        public int AddOrUpdateCommunities(IEnumerable<Community> communities)
         {
             var groupByExternal =
                 from community in communities
@@ -121,15 +134,16 @@ namespace Yang.SpiderApplication.Seashell
                 return this.context.AdministrativeDistrict.Where(predicate).ToList();           
         }
 
-        public async Task<int> GetAndRefreshAllCommunityInfo()
+        public async Task<int> RefreshAllCommunityInfo()
         {
             IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
             List<Community> communities = new List<Community>();
+            ConcurrentBag<Community> c = new ConcurrentBag<Community>();
                 
             foreach (AdministrativeDistrict district in districts)
             {               
-                List<Community> communitiesByDistrict = await ReadCommunities(district.CommunityMainPageURL);
+                List<Community> communitiesByDistrict = await ReadCommunitiesByDistrict(district.CommunityMainPageURL);
 
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
@@ -143,7 +157,7 @@ namespace Yang.SpiderApplication.Seashell
             return updatedCount;
         }
 
-        public async Task<int> RefreshExistingCommunityBasicInfo()
+        public async Task<int> RefreshCommunityBasicInfo()
         {
             IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
@@ -151,30 +165,18 @@ namespace Yang.SpiderApplication.Seashell
 
             foreach (AdministrativeDistrict district in districts)
             {
-                List<Community> communitiesByDistrict = await ReadCommunities(district.CommunityMainPageURL);
+                List<Community> communitiesByDistrict = await ReadCommunitiesBasicInfoByDistrict(district.CommunityMainPageURL);
 
                 communities = communities.Concat(communitiesByDistrict).ToList();
             }
 
-            CommunityRepository repo = new CommunityRepository(this.context);
+            int updatedCount = 0;
 
-            foreach (Community communityEntity in communities)
-            {
-                try
-                {
-                    repo.Update(communityEntity);
-                }               
-                catch (Exception e)
-                {
-                    Log.Logger.Error(e, communityEntity.CommunityName);
+            updatedCount = AddOrUpdateCommunities(communities);
 
-                    continue;
-                }
-            }
+            Log.Logger.Information("Updated count:" + updatedCount);
 
-            repo.Save();
-
-            return communities.Count();
+            return updatedCount;
         }
 
         public async Task<int> GetHistoryInfoForAllCommunities()
