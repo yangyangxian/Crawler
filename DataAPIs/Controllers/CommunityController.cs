@@ -37,12 +37,12 @@ namespace DataAPIs.Controllers
         {
             IList<AdministrativeDistrict> districts = CommunityApplications.GetAdministrativeDistricts();
 
-            List<Community> communities = new List<Community>();
+            IEnumerable<Community> communities = new List<Community>();
             foreach (AdministrativeDistrict district in districts)
             {
-                List<Community> communitiesByDistrict = await CommunityApplications.ReadCommunitiesByDistrict(district.CommunityMainPageURL);
+                IEnumerable<Community> communitiesByDistrict = await CommunityApplications.ReadCommunitiesByDistrict(district.CommunityMainPageURL);
 
-                communities = communities.Concat(communitiesByDistrict).ToList();
+                communities = communities.Concat(communitiesByDistrict);
             }
 
             int updatedCount = CommunityApplications.AddOrUpdateCommunities(communities);

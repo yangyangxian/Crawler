@@ -8,7 +8,11 @@ namespace SpiderApplication.Seashell.PageHandlers
 {
     public class PageHandler { 
 
-        protected static Yang.Entities.SeashellContext context = new Yang.Entities.SeashellContext();
+        protected Yang.Entities.SeashellContext context;
+
+        public PageHandler() {
+            context = new Yang.Entities.SeashellContext();
+        }
 
     }
 }

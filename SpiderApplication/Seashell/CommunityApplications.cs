@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Update.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
 using SpiderApplication.Seashell.PageHandlers;
 using System.Collections.Concurrent;
@@ -30,17 +31,18 @@ namespace Yang.SpiderApplication.Seashell
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
-        public async Task<List<Community>> ReadCommunitiesByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
+        public async Task<IEnumerable<Community>> ReadCommunitiesByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
         {
             string firstPage = string.Format(url, 0);
 
             int pageNum = await CommunityListPageHandler.ReadCommunityListPageNumber(firstPage);
 
             List<Community> communities = new List<Community>();
+            CommunityListPageHandler communityListPageHandler = new CommunityListPageHandler();
 
             for (int page = 1; page <= pageNum; page++)
             {
-                List<Community> list = await CommunityListPageHandler.ReadCommunityListData(string.Format(url, page));
+                List<Community> list = await communityListPageHandler.ReadCommunityListData(string.Format(url, page));
 
                 communities = communities.Concat(list).ToList();
             }
@@ -52,17 +54,18 @@ namespace Yang.SpiderApplication.Seashell
 
         //Only including data on the community list page. This will significantly reduce the time to retreive community data.
         //The info on the community page(unit, building number, plot ratio will not change normally)
-        public async Task<List<Community>> ReadCommunitiesBasicInfoByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
+        public async Task<IEnumerable<Community>> ReadCommunitiesBasicInfoByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
         {
             string firstPage = string.Format(url, 0);
 
             int pageNum = await CommunityListPageHandler.ReadCommunityListPageNumber(firstPage);
 
             List<Community> communities = new List<Community>();
+            CommunityListPageHandler communityListPageHandler = new CommunityListPageHandler();
 
             for (int page = 1; page <= pageNum; page++)
             {
-                List<Community> list = await CommunityListPageHandler.ReadCommunityListData(string.Format(url, page));
+                List<Community> list = await communityListPageHandler.ReadCommunityListData(string.Format(url, page));
 
                 communities = communities.Concat(list).ToList();
             }
@@ -134,19 +137,18 @@ namespace Yang.SpiderApplication.Seashell
                 return this.context.AdministrativeDistrict.Where(predicate).ToList();           
         }
 
-        public async Task<int> RefreshAllCommunityInfo()
+        public async Task<int> RefreshAllCommunityInfo(bool isOnlyRefreshBasicInfo = true)
         {
             IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
-            List<Community> communities = new List<Community>();
-            ConcurrentBag<Community> c = new ConcurrentBag<Community>();
-                
-            foreach (AdministrativeDistrict district in districts)
-            {               
-                List<Community> communitiesByDistrict = await ReadCommunitiesByDistrict(district.CommunityMainPageURL);
+            IEnumerable<Community> communities = new ConcurrentBag<Community>();
 
-                communities = communities.Concat(communitiesByDistrict).ToList();
-            }
+            await Parallel.ForEachAsync(districts, async (district, ct) =>
+            {
+                IEnumerable<Community> communitiesByDistrict = isOnlyRefreshBasicInfo ? await ReadCommunitiesBasicInfoByDistrict(district.CommunityMainPageURL) : await ReadCommunitiesByDistrict(district.CommunityMainPageURL);
+
+                communities = communities.Concat(communitiesByDistrict);
+            });
 
             int updatedCount = 0;
 
@@ -161,14 +163,14 @@ namespace Yang.SpiderApplication.Seashell
         {
             IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
-            List<Community> communities = new List<Community>();
+            IEnumerable<Community> communities = new ConcurrentBag<Community>();
 
-            foreach (AdministrativeDistrict district in districts)
+            await Parallel.ForEachAsync(districts, async (district, ct) =>
             {
-                List<Community> communitiesByDistrict = await ReadCommunitiesBasicInfoByDistrict(district.CommunityMainPageURL);
+                IEnumerable<Community> communitiesByDistrict = await ReadCommunitiesBasicInfoByDistrict(district.CommunityMainPageURL);
 
-                communities = communities.Concat(communitiesByDistrict).ToList();
-            }
+                communities = communities.Concat(communitiesByDistrict);
+            });
 
             int updatedCount = 0;
 

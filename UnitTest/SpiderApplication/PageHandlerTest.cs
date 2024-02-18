@@ -22,7 +22,8 @@ namespace UnitTest
         [TestMethod]
         public async Task TestReadCommunityListDataAsync()
         {
-            List<Community> communities = await CommunityListPageHandler.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageBeilinURL, 1));
+            CommunityListPageHandler communityListPageHandler = new CommunityListPageHandler();
+            List<Community> communities = await communityListPageHandler.ReadCommunityListData(string.Format(SeashellConst.CommunityMainPageBeilinURL, 1));
 
             Assert.IsTrue(communities.Count > 0);
         }

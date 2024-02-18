@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Yang.Entities;
 using Yang.SpiderApplication.Seashell;
@@ -16,9 +17,9 @@ namespace UnitTest
         {
             CommunityApplications app = new CommunityApplications();
 
-            List<Community> communities = await app.ReadCommunitiesByDistrict();
+            IEnumerable<Community> communities = await app.ReadCommunitiesByDistrict();
 
-            Assert.IsTrue(communities.Count > 0);         
+            Assert.IsTrue(communities.ToList().Count > 0);         
         }
 
         [TestMethod]

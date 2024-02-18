@@ -9,16 +9,16 @@ namespace SpiderApplication.Seashell.PageHandlers
     public class CommunityListPageHandler : PageHandler
     {
         //The url will be like 'https://xa.ke.com/xiaoqu/pg1/' which the number is the page number
-        public static async Task<List<Community>> ReadCommunityListData(string url)
+        public async Task<List<Community>> ReadCommunityListData(string url)
         {
             List<Community> communities = new List<Community>();
             try
             {
                 IDocument document = await WebPageReader.GetPageAsync(url);
-                 
+                
                 var communityItemList = document.QuerySelectorAll("ul.listContent li.xiaoquListItem");
 
-                Log.Logger.Information("The count returned from " + url + " is " + communityItemList.Count());
+                Log.Logger.Information("The community count returned from " + url + " is " + communityItemList.Count());
 
                 AdministrativeDistrictRepository administrativeDistrictRepository = new AdministrativeDistrictRepository(context);
 
@@ -33,6 +33,10 @@ namespace SpiderApplication.Seashell.PageHandlers
                     string seashellURL = communityItem.QuerySelector("div.info div.title a").GetAttribute("href");
 
                     AdministrativeDistrict administrativeDistrict = administrativeDistrictRepository.GetByName(districtName);
+                    if (administrativeDistrict == null)
+                    {
+                        throw new Exception("Unable to find district in database by district name.");
+                    }
                     Community communityToAdd = new Community()
                     {
                         CommunityName = communityName,
