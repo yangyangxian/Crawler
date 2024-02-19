@@ -21,8 +21,7 @@
     {
         CommunityApplications seashellApp = new CommunityApplications();
         isLoading = true;
-        IList<Community> communities = await seashellApp.ReadCommunities();
-        communityCount = communities.Count;
+        communityCount = await seashellApp.GetAndSaveCommunityInfo();
         isLoading = false;
     }
 }

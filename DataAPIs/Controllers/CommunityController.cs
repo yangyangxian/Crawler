@@ -35,17 +35,7 @@ namespace DataAPIs.Controllers
         [HttpGet(Name = "RefreshCommunityData")]
         public async Task<int> RefreshCommunityData()
         {
-            IList<AdministrativeDistrict> districts = CommunityApplications.GetAdministrativeDistricts();
-
-            IEnumerable<Community> communities = new List<Community>();
-            foreach (AdministrativeDistrict district in districts)
-            {
-                IEnumerable<Community> communitiesByDistrict = await CommunityApplications.ReadCommunitiesByDistrict(district.CommunityMainPageURL);
-
-                communities = communities.Concat(communitiesByDistrict);
-            }
-
-            int updatedCount = CommunityApplications.AddOrUpdateCommunities(communities);
+            int updatedCount = await CommunityApplications.GetAndSaveCommunityInfo();
 
             return updatedCount;
         }

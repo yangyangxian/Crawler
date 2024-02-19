@@ -27,19 +27,17 @@ namespace UnitTest
         {
             CommunityApplications app = new CommunityApplications();
 
-            int updatedRecords = await app.RefreshAllCommunityInfo();
+            int updatedRecords = await app.GetAndSaveCommunityInfo(false);
 
             Assert.IsTrue(updatedRecords > 0);
         }
 
         [TestMethod]
-        public async Task TestRefreshCommunityBasicInfoAsync()
+        public async Task TestRefreshCommunityInfoDatabase()
         {
             CommunityApplications app = new CommunityApplications();
 
-            int updatedRecords = await app.RefreshCommunityBasicInfo();
-
-            Assert.IsTrue(updatedRecords > 0);
+            await app.RefreshCommunityInfoInDatabase();
         }
     }
 }

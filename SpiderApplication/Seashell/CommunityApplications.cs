@@ -37,7 +37,7 @@ namespace Yang.SpiderApplication.Seashell
 
             int pageNum = await CommunityListPageHandler.ReadCommunityListPageNumber(firstPage);
 
-            List<Community> communities = new List<Community>();
+            IEnumerable<Community> communities = new List<Community>();
             CommunityListPageHandler communityListPageHandler = new CommunityListPageHandler();
 
             for (int page = 1; page <= pageNum; page++)
@@ -47,14 +47,14 @@ namespace Yang.SpiderApplication.Seashell
                 communities = communities.Concat(list).ToList();
             }
 
-            communities = await ReadCommunityDetailInfo(communities);
+            communities = await ReadCommunityDetailInfoParallel(communities);
 
             return communities;
         }
 
         //Only including data on the community list page. This will significantly reduce the time to retreive community data.
         //The info on the community page(unit, building number, plot ratio will not change normally)
-        public async Task<IEnumerable<Community>> ReadCommunitiesBasicInfoByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
+        public async Task<IEnumerable<Community>> ReadCommunitiesOnListByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
         {
             string firstPage = string.Format(url, 0);
 
@@ -73,7 +73,7 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public async Task<List<Community>> ReadCommunityDetailInfo(List<Community> communities)
+        public async Task<IEnumerable<Community>> ReadCommunityDetailInfoParallel(IEnumerable<Community> communities)
         {
             var options = new ParallelOptions()
             {
@@ -89,55 +89,18 @@ namespace Yang.SpiderApplication.Seashell
                     community.BuildingNumber = communityDetail.BuildingNumber;
                     community.Unit = communityDetail.Unit;
                     community.PlotRatio = communityDetail.PlotRatio;
+                    community.HomeListURL = communityDetail.HomeListURL;
                 }
                 catch (Exception e)
                 {
                     Log.Logger.Error(e, community.CommunityName + community.SeashellURL);
-
-                    community.BuildingNumber = 0;
-                    community.Unit = 0;
                 }
             });
 
              return communities;
-        }
-
-        public int AddOrUpdateCommunities(IEnumerable<Community> communities)
-        {
-            var groupByExternal =
-                from community in communities
-                group community by community.External_id;
-
-            int updatedCount = 0;
-            foreach (var communityGroup in groupByExternal)
-            {
-                try
-                {
-                    communityRepo.AddOrUpdate(communityGroup.First());
-                    updatedCount++;
-                }
-                catch (Exception e)
-                {
-                    Log.Logger.Error(e, communityGroup.First().CommunityName);
-
-                    continue;
-                }
-            }
-
-            communityRepo.Save();
-
-            return updatedCount;
         } 
 
-        public IList<AdministrativeDistrict> GetAdministrativeDistricts(Expression<Func<AdministrativeDistrict, bool>>? predicate = null)
-        {
-            if (predicate == null)
-                return this.context.AdministrativeDistrict.ToList();
-            else
-                return this.context.AdministrativeDistrict.Where(predicate).ToList();           
-        }
-
-        public async Task<int> RefreshAllCommunityInfo(bool isOnlyRefreshBasicInfo = true)
+        public async Task<int> GetAndSaveCommunityInfo(bool isOnlyRefreshBasicInfo = true)
         {
             IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
 
@@ -145,53 +108,40 @@ namespace Yang.SpiderApplication.Seashell
 
             await Parallel.ForEachAsync(districts, async (district, ct) =>
             {
-                IEnumerable<Community> communitiesByDistrict = isOnlyRefreshBasicInfo ? await ReadCommunitiesBasicInfoByDistrict(district.CommunityMainPageURL) : await ReadCommunitiesByDistrict(district.CommunityMainPageURL);
+                IEnumerable<Community> communitiesByDistrict = isOnlyRefreshBasicInfo ? await ReadCommunitiesOnListByDistrict(district.CommunityMainPageURL) : await ReadCommunitiesByDistrict(district.CommunityMainPageURL);
 
                 communities = communities.Concat(communitiesByDistrict);
             });
 
             int updatedCount = 0;
 
-            updatedCount = AddOrUpdateCommunities(communities);
+            updatedCount = communityRepo.AddOrUpdate(communities);
 
             Log.Logger.Information("Updated count:" + updatedCount);
 
             return updatedCount;
         }
 
-        public async Task<int> RefreshCommunityBasicInfo()
+        //This method is for refreshing the communities basic information(not including listing price and units)
+        //in the database and will not read new community from seashell website.
+        public async Task RefreshCommunityInfoInDatabase()
         {
-            IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
+            List<Community> communitiesInDB = communityRepo.GetAll().ToList();
 
-            IEnumerable<Community> communities = new ConcurrentBag<Community>();
+            communitiesInDB = (await ReadCommunityDetailInfoParallel(communitiesInDB)).ToList();
 
-            await Parallel.ForEachAsync(districts, async (district, ct) =>
-            {
-                IEnumerable<Community> communitiesByDistrict = await ReadCommunitiesBasicInfoByDistrict(district.CommunityMainPageURL);
-
-                communities = communities.Concat(communitiesByDistrict);
-            });
-
-            int updatedCount = 0;
-
-            updatedCount = AddOrUpdateCommunities(communities);
-
-            Log.Logger.Information("Updated count:" + updatedCount);
-
-            return updatedCount;
+            communityRepo.AddOrUpdate(communitiesInDB);
         }
 
         public async Task<int> GetHistoryInfoForAllCommunities()
         {
-            List<Community> communities = this.context.Communities.ToList();
+            IEnumerable<Community> communities = this.context.Communities.ToList();
 
-            communities = await ReadCommunityDetailInfo(communities);
+            communities = await ReadCommunityDetailInfoParallel(communities);
 
             CommunityRepository repo = new CommunityRepository(context);
 
             repo.AddOrUpdate(communities);
-
-            repo.Save();
 
             return communities.Count();
         }

@@ -18,6 +18,7 @@ namespace SpiderApplication.Seashell.PageHandlers
             int buildingNumber = 0;
             int units = 0;
             decimal plotRatio = 0;
+
             string buildingText = string.Empty;
             string unitsText = string.Empty;
             string homeListURL = string.Empty;
@@ -30,7 +31,7 @@ namespace SpiderApplication.Seashell.PageHandlers
             {
                 buildingText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(3) span.xiaoquInfoContent").InnerHtml;
                 unitsText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(2) span.xiaoquInfoContent").InnerHtml;
-                homeListURL = document.QuerySelector("div#goodSellHeader a") != null ? document.QuerySelector("div#goodSellHeader a").GetAttribute("href") : string.Empty;
+                homeListURL = document.QuerySelector("div.goodSellHeader a") != null ? document.QuerySelector("div.goodSellHeader a").GetAttribute("href") : string.Empty;
                 plotRatioText = document.QuerySelector("div.xiaoquInfo div.xiaoquInfoItem:nth-child(5) span.xiaoquInfoContent").InnerHtml;
 
                 int.TryParse(buildingText.Remove(buildingText.IndexOf('栋')), out buildingNumber);

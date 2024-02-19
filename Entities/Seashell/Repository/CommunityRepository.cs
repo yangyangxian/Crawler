@@ -1,4 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Serilog;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Linq;
 
 namespace Yang.Entities
 {
@@ -11,8 +15,21 @@ namespace Yang.Entities
 
         public Community FindByName(string communityName, int administrativeDistrictId)
         {
-            Community community = this.context.Communities.FirstOrDefault(c => c.CommunityName == communityName && c.AdministrativeDistrictId == administrativeDistrictId);
+            Community community = this.context.Communities.Include(c => c.CommunityHistoryInfo).FirstOrDefault(c => c.CommunityName == communityName && c.AdministrativeDistrictId == administrativeDistrictId);
             return community;
+        }
+
+        public IEnumerable<Community> GetAll()
+        {
+            return this.context.Communities.Include(c => c.CommunityHistoryInfo);
+        }
+
+        public IEnumerable<Community> GetCommunitiesByPredicate(Expression<Func<Community, bool>>? predicate = null)
+        {
+            if (predicate == null)
+                return this.context.Communities.ToList();
+            else
+                return this.context.Communities.Where(predicate).ToList();
         }
 
         public void Update(Community communityEntity)
@@ -80,12 +97,29 @@ namespace Yang.Entities
             }
         }
 
-        public void AddOrUpdate(List<Community> communityEntities)
+        public int AddOrUpdate(IEnumerable<Community> communityEntities)
         {
-            foreach (Community communityEntity in communityEntities)
+            var groupByExternal =
+                from community in communityEntities
+                group community by community.External_id;
+
+            int updatedCount = 0;
+            foreach (var communityGroup in groupByExternal)
             {
-                AddOrUpdate(communityEntity);
+                try
+                {
+                    AddOrUpdate(communityGroup.First());
+                    updatedCount++;
+                }
+                catch (Exception e)
+                {
+                    Log.Logger.Error(e, communityGroup.First().CommunityName);
+                }
             }
+
+            Save();
+
+            return updatedCount;
         }
 
         public void Update(List<Community> communityEntities)
