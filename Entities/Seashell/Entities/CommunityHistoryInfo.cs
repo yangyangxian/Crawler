@@ -15,5 +15,7 @@
         public decimal CommunityListingPrice { get; set; }
 
         public int CommunityListingUnits { get; set; }
+
+        public int TransactionsInRecent90Days { get; set; }
     }
 }

@@ -31,6 +31,9 @@ namespace SpiderApplication.Seashell.PageHandlers
                     string listingUnits = communityItem.QuerySelector("div.xiaoquListItemRight div.xiaoquListItemSellCount a.totalSellCount span").InnerHtml;
                     string seashellId = communityItem.GetAttribute("data-id");
                     string seashellURL = communityItem.QuerySelector("div.info div.title a").GetAttribute("href");
+                    string transactionsInRecent90Days = communityItem.QuerySelector("div.info div.houseInfo a").InnerHtml;
+
+                    transactionsInRecent90Days = transactionsInRecent90Days.Replace("90天成交", string.Empty).Replace("套", string.Empty);
 
                     AdministrativeDistrict administrativeDistrict = administrativeDistrictRepository.GetByName(districtName);
                     if (administrativeDistrict == null)
@@ -50,6 +53,7 @@ namespace SpiderApplication.Seashell.PageHandlers
                             CommunityListingPrice = decimal.TryParse(listingPrice, out decimal price) ? price : 0,
                             CommunityListingUnits = int.TryParse(listingUnits, out int units) ? units : 0,
                             CommunityName = communityName,
+                            TransactionsInRecent90Days = int.TryParse(transactionsInRecent90Days, out int transactionsInRecent90DaysInt) ? transactionsInRecent90DaysInt : 0,
                             DataTime = DateTime.Now.Date
                         }).ToList()
                     };

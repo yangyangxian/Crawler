@@ -126,16 +126,16 @@ namespace Yang.SpiderApplication.Seashell
         //in the database and will not read new community from seashell website.
         public async Task RefreshCommunityInfoInDatabase()
         {
-            List<Community> communitiesInDB = communityRepo.GetAll().ToList();
+            IEnumerable<Community> communitiesInDB = communityRepo.GetAll();
 
-            communitiesInDB = (await ReadCommunityDetailInfoParallel(communitiesInDB)).ToList();
+            communitiesInDB = await ReadCommunityDetailInfoParallel(communitiesInDB);
 
             communityRepo.AddOrUpdate(communitiesInDB);
         }
 
         public async Task<int> GetHistoryInfoForAllCommunities()
         {
-            IEnumerable<Community> communities = this.context.Communities.ToList();
+            IEnumerable<Community> communities = communityRepo.GetAll();
 
             communities = await ReadCommunityDetailInfoParallel(communities);
 

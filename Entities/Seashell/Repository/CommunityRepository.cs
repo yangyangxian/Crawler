@@ -21,7 +21,7 @@ namespace Yang.Entities
 
         public IEnumerable<Community> GetAll()
         {
-            return this.context.Communities.Include(c => c.CommunityHistoryInfo);
+            return this.context.Communities.Include(c => c.CommunityHistoryInfo).ToList();
         }
 
         public IEnumerable<Community> GetCommunitiesByPredicate(Expression<Func<Community, bool>>? predicate = null)
