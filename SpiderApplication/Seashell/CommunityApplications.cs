@@ -31,7 +31,7 @@ namespace Yang.SpiderApplication.Seashell
         }
         
         //The url should be the first page of xiaoqu list like the url in the default value of the parameter url
-        public async Task<IEnumerable<Community>> ReadCommunitiesByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
+        protected async Task<IEnumerable<Community>> ReadCommunitiesByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
         {
             string firstPage = string.Format(url, 0);
 
@@ -54,7 +54,7 @@ namespace Yang.SpiderApplication.Seashell
 
         //Only including data on the community list page. This will significantly reduce the time to retreive community data.
         //The info on the community page(unit, building number, plot ratio will not change normally)
-        public async Task<IEnumerable<Community>> ReadCommunitiesOnListByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
+        protected async Task<IEnumerable<Community>> ReadCommunitiesOnListByDistrict(string url = SeashellConst.CommunityMainPageChanganURL)
         {
             string firstPage = string.Format(url, 0);
 
@@ -73,7 +73,7 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public async Task<IEnumerable<Community>> ReadCommunityDetailInfoParallel(IEnumerable<Community> communities)
+        protected async Task<IEnumerable<Community>> ReadCommunityDetailInfoParallel(IEnumerable<Community> communities)
         {
             var options = new ParallelOptions()
             {
@@ -89,7 +89,6 @@ namespace Yang.SpiderApplication.Seashell
                     community.BuildingNumber = communityDetail.BuildingNumber;
                     community.Unit = communityDetail.Unit;
                     community.PlotRatio = communityDetail.PlotRatio;
-                    community.HomeListURL = communityDetail.HomeListURL;
                 }
                 catch (Exception e)
                 {
@@ -98,7 +97,31 @@ namespace Yang.SpiderApplication.Seashell
             });
 
              return communities;
-        } 
+        }
+
+        protected async Task<IEnumerable<Community>> ReadCommunityHistoryInfoParallel(IEnumerable<Community> communities)
+        {
+            var options = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = 50
+            };
+
+            await Parallel.ForEachAsync(communities, options, async (community, ct) =>
+            {
+                CommunityHistoryInfo communityHistoryInfo = new CommunityHistoryInfo();
+                try
+                {
+                    communityHistoryInfo = await HomeListPageHandler.ReadCommunityHistoryInfo(string.Format(SeashellConst.CommunityHomeListURL, 1, community.External_id));
+                    community.AddCommunityHistoryInfo(communityHistoryInfo);
+                }
+                catch (Exception e)
+                {
+                    Log.Logger.Error(e, community.CommunityName + string.Format(SeashellConst.CommunityHomeListURL, 1, community.External_id));
+                }
+            });
+
+            return communities;
+        }
 
         public async Task<int> GetAndSaveCommunityInfo(bool isOnlyRefreshBasicInfo = true)
         {
@@ -133,17 +156,15 @@ namespace Yang.SpiderApplication.Seashell
             communityRepo.AddOrUpdate(communitiesInDB);
         }
 
-        public async Task<int> GetHistoryInfoForAllCommunities()
+        public async Task<int> GetHistoryInfoForCommunitiesInDatabse()
         {
             IEnumerable<Community> communities = communityRepo.GetAll();
 
-            communities = await ReadCommunityDetailInfoParallel(communities);
+            communities = await ReadCommunityHistoryInfoParallel(communities);
 
-            CommunityRepository repo = new CommunityRepository(context);
+            int updatedCounts = communityRepo.SaveCommunityHistoryInfo(communities);
 
-            repo.AddOrUpdate(communities);
-
-            return communities.Count();
+            return updatedCounts;
         }
 
         //public async Task<List<Home>> ReadHomesByCommunity(Community community)

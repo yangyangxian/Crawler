@@ -24,9 +24,6 @@ namespace Yang.Entities
         [MaxLength(300)]
         public string SeashellURL { get; set; }
 
-        [MaxLength(300)]
-        public string HomeListURL { get; set; }
-
         [MaxLength(100)]
         public string External_id { get; set; }
 

@@ -13,13 +13,13 @@ namespace UnitTest
     public class CommunityApplicationTest : TestBase
     {
         [TestMethod]
-        public async Task TestReadAllCommunitiesAsync()
+        public async Task TestGetHistoryInfoForCommunitiesInDatabse()
         {
             CommunityApplications app = new CommunityApplications();
 
-            IEnumerable<Community> communities = await app.ReadCommunitiesByDistrict();
+            int updatedRecords = await app.GetHistoryInfoForCommunitiesInDatabse();
 
-            Assert.IsTrue(communities.ToList().Count > 0);         
+            Assert.IsTrue(updatedRecords > 0);
         }
 
         [TestMethod]

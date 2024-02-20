@@ -122,12 +122,18 @@ namespace Yang.Entities
             return updatedCount;
         }
 
-        public void Update(List<Community> communityEntities)
+        public int SaveCommunityHistoryInfo(IEnumerable<Community> communityEntities)
         {
             foreach (Community communityEntity in communityEntities)
             {
-                Update(communityEntity);
+                context.Communities.Update(communityEntity);
             }
+
+            int count = context.SaveChanges();
+
+            Log.Logger.Information("AddCommunityHistoryInfo:" + count + " records have been updated.");
+
+            return count;
         }
     }
 }
