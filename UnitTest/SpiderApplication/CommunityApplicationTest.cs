@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace UnitTest
         {
             CommunityApplications app = new CommunityApplications();
 
-            int updatedRecords = await app.GetAndSaveCommunityInfo(false);
+            int updatedRecords = await app.GetAndSaveCommunityInfo(false, SeashellConst.City.南京);
 
             Assert.IsTrue(updatedRecords > 0);
         }

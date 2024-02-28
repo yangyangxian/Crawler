@@ -123,9 +123,11 @@ namespace Yang.SpiderApplication.Seashell
             return communities;
         }
 
-        public async Task<int> GetAndSaveCommunityInfo(bool isOnlyRefreshBasicInfo = true)
+        public async Task<int> GetAndSaveCommunityInfo(bool isOnlyRefreshBasicInfo = true, SeashellConst.City city = SeashellConst.City.西安)
         {
             IList<AdministrativeDistrict> districts = administrativeDistrictRepository.GetAll();
+
+            districts = districts.Where(d => d.City == city.ToString()).ToList();
 
             IEnumerable<Community> communities = new ConcurrentBag<Community>();
 

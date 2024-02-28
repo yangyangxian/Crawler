@@ -20,5 +20,11 @@ namespace Yang.Utilities
             Id,
         }
 
+        public enum City
+        {
+            西安,
+            南京
+        }
+
     }
 }

@@ -6,6 +6,8 @@ namespace Yang.Entities
     {
         public int AdministrativeDistrictId { get; set; }
 
+        public string City { get; set; }
+
         [MaxLength(20)]
         public string AdministrativeDistrictName { get; set; }
 
