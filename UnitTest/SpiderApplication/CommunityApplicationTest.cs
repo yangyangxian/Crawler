@@ -27,7 +27,7 @@ namespace UnitTest
         {
             CommunityApplications app = new CommunityApplications();
 
-            int updatedRecords = await app.GetAndSaveCommunityInfo(false, SeashellConst.City.南京);
+            int updatedRecords = await app.GetAndSaveCommunityInfo(false, SeashellConst.City.西安);
 
             Assert.IsTrue(updatedRecords > 0);
         }

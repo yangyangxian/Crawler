@@ -16,8 +16,9 @@ namespace Yang.Utilities
 
             if (!url.StartsWith("https:") && !url.StartsWith("http:"))
                 throw new ArgumentException("url must start with http or https");
-            UserAgent.UserAgent agent = UserAgent.UAgentFactory.GetUserAgent(UserAgent.ClientEnum.随机);
-            var requester = new DefaultHttpRequester(agent.ToString());
+            var requester = new DefaultHttpRequester("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36");
+            //UserAgent.UserAgent agent = UserAgent.UAgentFactory.GetUserAgent(UserAgent.ClientEnum.随机);
+            //var requester = new DefaultHttpRequester(agent.ToString());
 
             var config = Configuration.Default.WithDefaultLoader().With(requester);
 
